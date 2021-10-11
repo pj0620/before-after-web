@@ -14,5 +14,11 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-plusplus': [2, { allowForLoopAfterthoughts: true }],
+    "import/prefer-default-export": "off",
+    "vue/max-len": ["error", {
+      "code": 120,
+      "template": 120,
+  }]
   },
 };
