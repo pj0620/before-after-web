@@ -1,8 +1,11 @@
 <template>
     <Searchbar @search="search"/>
 
-    <div id="photos" v-if="!loading">
+    <div id="photos" v-if="!loading && posts.length > 0">
       <PostsCardView :posts="posts"/>
+    </div>
+    <div id="no-results" v-else-if="!loading">
+      <h1>No Results</h1>
     </div>
     <div id="loading-bar" v-else>
       <h1>Loading...</h1>

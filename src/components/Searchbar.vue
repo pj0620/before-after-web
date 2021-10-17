@@ -13,9 +13,9 @@
             </div>
             <div class="flex flex-row flex-wrap card-container h-5rem">
                 <div class="flex align-items-center justify-content-center p-field-checkbox mr-5">
-                    <Checkbox id="nsfw" name="nsfw" value="NSFW" :boolean=true v-model="nsfw"
-                        class="mr-1" />
-                    <label for="nsfw">Include NSFW?</label>
+                    <label for="nsfw-select" class="mr-1">NSFW</label>
+                    <TreeSelect id="nsfw-select" v-model="nsfwSelected"
+                        :options="nsfwOptions" placeholder="Both NSFW/SFW"/>
                 </div>
                 <div class="flex align-items-center justify-content-center p-field-checkbox mr-5">
                     <label for="gender-select" class="mr-1">Gender</label>
@@ -50,7 +50,12 @@ const emit = defineEmits(['search']);
 const startWeight = ref(200);
 const endWeight = ref(100);
 
-const nsfw = ref(true);
+const nsfwSelected = ref({ Both: true });
+const nsfwOptions = [
+  { key: 'NSFW', label: 'NSFW' },
+  { key: 'SFW', label: 'SFW' },
+  { key: 'Both', label: 'Both NSFW/SFW' },
+];
 
 const genderSelected = ref({ B: true });
 const genderOptions = [
@@ -73,14 +78,23 @@ const weightRangeOptions = weightRanges.map(
 const search = () => {
   const searchParams:Partial<SearchParams> = {
     start_weight: startWeight.value,
+    start_weight_range: parseInt(Object.getOwnPropertyNames(startWeightRangeSelected.value)[0], 10),
     end_weight: endWeight.value,
-    nsfw: nsfw.value,
+    end_weight_range: parseInt(Object.getOwnPropertyNames(endWeightRangeSelected.value)[0], 10),
   };
+
   if (Object.prototype.hasOwnProperty.call(genderSelected.value, 'M')) {
     searchParams.gender = 'M';
   } else if (Object.prototype.hasOwnProperty.call(genderSelected.value, 'F')) {
     searchParams.gender = 'F';
   }
+
+  if (Object.prototype.hasOwnProperty.call(nsfwSelected.value, 'NSFW')) {
+    searchParams.nsfw = true;
+  } else if (Object.prototype.hasOwnProperty.call(nsfwSelected.value, 'SFW')) {
+    searchParams.nsfw = false;
+  }
+
   emit('search', searchParams);
 };
 </script>
