@@ -16,9 +16,15 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-plusplus': [2, { allowForLoopAfterthoughts: true }],
     "import/prefer-default-export": "off",
-    "vue/max-len": ["error", {
-      "code": 120,
-      "template": 120,
-  }]
+    "vue/max-len": [
+      "error", 
+      {"code": 120, "template": 120}
+    ],
+    "max-classes-per-file": [
+      "error",
+      5
+    ],
+    "no-shadow": "off",
+    "import/named": "off"
   },
 };

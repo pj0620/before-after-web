@@ -1,1 +1,1 @@
-export { MockPostsService } from './before-after-pics-service';
+export * from './before-after-pics.service';

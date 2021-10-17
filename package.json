@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.23.0",
     "babel": "^6.23.0",
     "core-js": "^3.18.2",
     "primeicons": "^4.1.0",
@@ -34,10 +35,10 @@
     "primeicons": "^4.1.0",
     "primereact": "^6.6.0",
     "primevue": "^3.8.0",
-    "typescript": "~4.1.5",
-    "react-transition-group": "^4.4.2",
+    "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react": "^17.0.2"
+    "react-transition-group": "^4.4.2",
+    "typescript": "~4.1.5"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
