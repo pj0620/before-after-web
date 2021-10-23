@@ -1,10 +1,10 @@
 <template>
-    <div class="flex flex-column card-container w-full">
+    <div class="flex flex-column card-container w-full p-2">
         <div
           class="flex align-items-center justify-content-center font-bold text-white border-round
-                m-2"
+                m-2 w-full "
           v-for="post in posts" :key="post.id">
-            <div class="surface-card p-4 shadow-2 border-round">
+            <div class="surface-card p-4 shadow-2 border-round w-full">
                 <div class="flex flex-row flex-wrap justify-content-between">
                     <div class="flex text-3xl font-medium text-900 mb-3">
                         {{buildTitle(post)}}
@@ -22,7 +22,7 @@
                         {{getDateDesc(post.createdAt)}}
                     </div>
                 </div>
-                <img :src="post.imageUrl" style="max-width: 90%">
+                <img :src="post.imageUrl" style="max-width: 90%; max-height: 70vh;">
             </div>
         </div>
     </div>

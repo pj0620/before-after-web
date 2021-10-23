@@ -11,7 +11,7 @@
                     <Button label="Find Photos" class="ml-3" @click="search"/>
                 </div>
             </div>
-            <div class="flex flex-row flex-wrap card-container h-5rem">
+            <div class="flex flex-row flex-wrap card-container h-full">
                 <div class="flex align-items-center justify-content-center p-field-checkbox mr-5">
                     <label for="nsfw-select" class="mr-1">NSFW</label>
                     <TreeSelect id="nsfw-select" v-model="nsfwSelected"
