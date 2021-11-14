@@ -1,9 +1,9 @@
 <template>
-    <div class="card bg-white">
+    <div class="card bg-blue-100">
         <div class="flex flex-column card-container green-container">
             <div class="flex  flex-wrap card-container">
                 <div class="flex flex-column md:flex-row align-items-center justify-content-center
-                  m-2">
+                  pt-2 pl-2 pb-2">
                     <h3 style="color: black;" class="mr-3">Start Weight</h3>
                     <InputNumber v-model="startWeight" class="mr-3" showButtons suffix=" lbs"/>
                     <h3 style="color: black;" class="mr-3">End Weight</h3>
@@ -11,7 +11,7 @@
                     <Button label="Find Photos" class="ml-3" @click="search"/>
                 </div>
             </div>
-            <div class="flex flex-row flex-wrap card-container h-full">
+            <div class="flex flex-row flex-wrap card-container h-full pl-2 pb-2">
                 <div class="flex align-items-center justify-content-center p-field-checkbox mr-5">
                     <label for="nsfw-select" class="mr-1">NSFW</label>
                     <TreeSelect id="nsfw-select" v-model="nsfwSelected"
@@ -40,7 +40,6 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
-import Checkbox from 'primevue/checkbox';
 import TreeSelect from 'primevue/treeselect';
 import { ref, defineEmits } from 'vue';
 import { SearchParams } from '@/models/search-params.model';

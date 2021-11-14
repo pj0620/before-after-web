@@ -1,17 +1,16 @@
 import axios from 'axios';
 import { BeforeAfterPicture } from '../models';
-import { CONSTANTS } from '@/constants';
+import { Constants } from '@/constants';
 import { SearchParams } from '@/models/search-params.model';
 
 export class BeforeAfterPicsService {
   public static async getPosts(params?:Partial<SearchParams>): Promise<BeforeAfterPicture[]> {
     const res = await axios({
       method: 'get',
-      url: CONSTANTS.BASE_URL + CONSTANTS.POSTS,
+      url: Constants.BASE_URL + Constants.POSTS,
       data: null,
       params,
     });
-    console.log(`res -> ${JSON.stringify(res)}`);
     if (res.status === 200) {
       return res.data as BeforeAfterPicture[];
     }

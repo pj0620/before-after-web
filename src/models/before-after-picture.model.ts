@@ -10,4 +10,6 @@ export interface BeforeAfterPicture {
   description: string;
   originalPost: string;
   imageUrl: string;
+  imageWidth?: number;
+  imageHeight?: number;
 }

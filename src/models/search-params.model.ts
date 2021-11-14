@@ -8,5 +8,7 @@ export interface SearchParams {
     nsfw?: boolean,
     age?: number,
     age_range?: number,
-    gender?: string
+    gender?: string,
+    limit?: number,
+    offset?: number
 }
