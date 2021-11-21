@@ -24,7 +24,7 @@
     <iframe v-if="post.imageUrl.includes('redditmedia')"
         :width="post.imageWidth" :height="post.imageHeight"
         :title="post.description" sandbox="allow-forms
-            allow-orientation-lock allow-popups allow-popups-to-escape-sandbox
+            allow-orientation-lock
             allow-presentation allow-same-origin allow-scripts
             allow-top-navigation-by-user-activation" scrolling="no"
         :src="post.imageUrl" allowfullscreen

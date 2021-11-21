@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-blue-100">
+    <div class="card bg-blue-50">
         <div class="flex flex-column card-container green-container">
             <div class="flex  flex-wrap card-container">
                 <div class="flex flex-column md:flex-row align-items-center justify-content-center
