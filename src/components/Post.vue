@@ -21,22 +21,30 @@
             source
         </a>
     </div>
-    <iframe v-if="post.imageUrl.includes('redditmedia')"
-        :width="post.imageWidth" :height="post.imageHeight"
-        :title="post.description" sandbox="allow-forms
-            allow-orientation-lock
-            allow-presentation allow-same-origin allow-scripts
-            allow-top-navigation-by-user-activation" scrolling="no"
-        :src="post.imageUrl" allowfullscreen
-        :style="`overflow:hidden;margin:0 auto;
-            width:${post.imageWidth};max-height:70vh`" >
-    </iframe>
+    <div v-if="post.imageUrl.includes('redditmedia')">
+      <div class="overall-scalable"
+      :width="post.imageWidth!" :height="post.imageHeight!"
+      :style="`width: ${finalWidth}px; height: ${finalHeight}px;`">
+        <iframe
+            :width="post.imageWidth!" :height="post.imageHeight!"
+            class="scalable"
+            :title="post.description" scrolling="no"
+            sandbox="allow-forms allow-orientation-lock allow-presentation allow-same-origin
+            allow-scripts allow-top-navigation-by-user-activation"
+            :src="post.imageUrl" allowfullscreen
+            :style="iframeCss"
+            >
+        </iframe>
+      </div>
+    </div>
     <img :src="post.imageUrl" style="max-width: 90%; max-height: 70vh;" v-else/>
 </template>
 
 <script setup lang="ts">
 import Tag from 'primevue/tag';
-import { PropType, ref, defineProps } from 'vue';
+import {
+  PropType, ref, defineProps, computed,
+} from 'vue';
 import { BeforeAfterPicture } from '@/models';
 
 const props = defineProps({
@@ -46,6 +54,38 @@ const props = defineProps({
   },
 });
 const post = ref(props.post);
+
+// iframe scaling
+const SM_WIDTH = 576;
+const MD_WIDTH = 768;
+const screenWidth = computed(() => Math.max(
+  document.documentElement.clientWidth || 0,
+  window.innerWidth || 0,
+));
+const finalWidth = computed(() => {
+  if (screenWidth.value <= MD_WIDTH) {
+    return Math.floor(0.85 * screenWidth.value);
+  }
+  return Math.floor(0.45 * screenWidth.value);
+});
+const scaleFactor = computed(() => finalWidth.value / post.value.imageWidth!);
+const finalHeight = computed(() => Math.floor(scaleFactor.value * post.value.imageHeight!));
+const iframeCss = computed(() => {
+  let css = 'overflow:hidden;margin:0 auto;'
+  + `width:${post.value.imageWidth};`;
+
+  // if (screenWidth.value <= SM_WIDTH) {
+  css += `-ms-zoom: ${scaleFactor.value};`
+    + `-moz-transform: scale(${scaleFactor.value});`
+    + '-moz-transform-origin: 0 0;'
+    + `-o-transform: scale(${scaleFactor.value});`
+    + '-o-transform-origin: 0 0;'
+    + `-webkit-transform: scale(${scaleFactor.value});`
+    + '-webkit-transform-origin: 0 0;';
+  // }
+
+  return css;
+});
 
 function buildTitle(post:BeforeAfterPicture) {
   return `${post.startWeight} lbs → ${post.endWeight} lbs (${post.weightChange} lbs)`;
@@ -85,3 +125,8 @@ function getDateDesc(date:number): string {
   return `${Math.ceil(diff / Duration.YEAR)} years ago`;
 }
 </script>
+
+<style>
+  .overall-scalable {overflow: hidden; -webkit-transition: all 1s;}
+  .scalable {-webkit-transform-origin: top left; -webkit-transition: all 1s;}
+</style>

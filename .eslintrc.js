@@ -25,6 +25,7 @@ module.exports = {
       5
     ],
     "no-shadow": "off",
-    "import/named": "off"
+    "import/named": "off",
+    "no-non-null-assertion": "off"
   },
 };

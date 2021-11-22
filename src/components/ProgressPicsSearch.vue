@@ -7,7 +7,7 @@
   <div id="photos" style="background-color: var(--blue-100)" v-if="!loading && posts.length > 0"
     ref='scrollComponent'>
     <div class="grid font-bold text-white border-round m-2" >
-      <div class="xl:col-6 lg:col-12 md:col-12 sm:col-12 pb-0 pt-0"
+      <div class="xl:col-6 lg:col-6 md:col-6 sm:col-12 pb-0 pt-0"
         v-for="post in posts"
         :key="post.id"
       >
@@ -102,7 +102,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
-
 </script>
 
 <style scoped>
