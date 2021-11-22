@@ -55,14 +55,16 @@ BeforeAfterPicsService.getPosts({ limit: postsLimit }).then((resp: BeforeAfterPi
   posts.splice(0, posts.length, ...resp);
 });
 
-const searchParams = reactive({});
-const search = (searchParams: Partial<SearchParams>) => {
+let searchParams:Partial<SearchParams>|null = null;
+const search = (searchParamsIn: Partial<SearchParams>) => {
   const loading = ref(true);
   postsOffset = 0;
+  searchParams = searchParamsIn;
   BeforeAfterPicsService
-    .getPosts({ ...searchParams, limit: postsLimit })
+    .getPosts({ ...searchParamsIn, limit: postsLimit })
     .then((resp: BeforeAfterPicture[]) => {
       loading.value = false;
+      console.log(JSON.stringify(resp[0]));
       posts.splice(0, posts.length, ...resp);
     });
 };

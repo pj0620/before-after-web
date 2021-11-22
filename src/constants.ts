@@ -4,7 +4,8 @@ export const enum Environment {
 }
 
 export const Constants = {
-  BASE_URL: 'https://api.progresspicsearch.com',
+  // BASE_URL: 'https://api.progresspicsearch.com',
+  BASE_URL: 'http://localhost:3000',
   POSTS: '/posts',
   INFINITE_SCROLL: true,
   AD_PROB: 0,
