@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-row flex-wrap justify-content-between mb-1">
-        <div class="flex text-3xl font-medium text-900">
+        <div class="flex text-white heading-text">
             {{buildTitle(post)}}
         </div>
         <div class="top-auto bottom-auto" v-if="post.nsfw">
@@ -8,11 +8,11 @@
         </div>
     </div>
     <div class="flex flex-row flex-wrap justify-content-between mb-1">
-        <div class="flex font-medium text-500">
+        <div class="flex text-white subheading-text">
             {{post.gender? post.gender=="M" ? "Male," : "Female," : "" }}
             {{post.age}}
         </div>
-        <div class="flex font-medium text-500">
+        <div class="flex text-white subheading-text">
             {{getDateDesc(post.createdAt)}}
         </div>
     </div>
@@ -128,6 +128,24 @@ function getDateDesc(date:number): string {
 </script>
 
 <style>
-  .overall-scalable {overflow: hidden; -webkit-transition: all 1s;}
-  .scalable {-webkit-transform-origin: top left; -webkit-transition: all 1s;}
+  .overall-scalable {
+    overflow: hidden; 
+    -webkit-transition: all 1s;
+  }
+
+  .scalable {
+    -webkit-transform-origin: top left; 
+    -webkit-transition: all 1s;
+  }
+
+  .heading-text {
+    margin: auto;
+    font-size: 2.1rem;
+    font-weight: bolder;
+  }
+
+  .subheading-text {
+    font-size: 1rem;
+    font-weight: lighter;
+  }
 </style>

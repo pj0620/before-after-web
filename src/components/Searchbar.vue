@@ -1,33 +1,33 @@
 <template>
-    <div class="card bg-blue-50">
+    <div class="card bg-primary">
         <div class="flex flex-column card-container green-container">
             <div class="flex  flex-wrap card-container">
                 <div class="flex flex-column md:flex-row align-items-center justify-content-center
                   pt-2 pl-2 pb-2">
-                    <h3 style="color: black;" class="mr-3">Start Weight</h3>
-                    <InputNumber v-model="startWeight" class="mr-3" showButtons suffix=" lbs"/>
-                    <h3 style="color: black;" class="mr-3">End Weight</h3>
+                    <h3 class="entry-label-weight">Start Weight</h3>
+                    <InputNumber v-model="startWeight" class="mr-4" showButtons suffix=" lbs"/>
+                    <h3 class="entry-label-weight">End Weight</h3>
                     <InputNumber v-model="endWeight" showButtons suffix=" lbs"/>
-                    <Button label="Find Photos" class="ml-3" @click="search"/>
+                    <Button label="Find Photos" class="ml-3 border-white border-3 border-round text-lg font-bold" @click="search"/>
                 </div>
             </div>
             <div class="flex flex-row flex-wrap card-container h-full pl-2 pb-2">
-                <div class="flex align-items-center justify-content-center p-field-checkbox mr-5">
+                <div class="flex align-items-center justify-content-center p-field-checkbox mr-5 entry-label">
                     <label for="nsfw-select" class="mr-1">NSFW</label>
                     <TreeSelect id="nsfw-select" v-model="nsfwSelected"
                         :options="nsfwOptions" placeholder="Both NSFW/SFW"/>
                 </div>
-                <div class="flex align-items-center justify-content-center p-field-checkbox mr-5">
+                <div class="flex align-items-center justify-content-center p-field-checkbox mr-5 entry-label">
                     <label for="gender-select" class="mr-1">Gender</label>
                     <TreeSelect id="gender-select" v-model="genderSelected"
                         :options="genderOptions" placeholder="Both"/>
                 </div>
-                <div class="flex align-items-center justify-content-center p-field-checkbox mr-5">
+                <div class="flex align-items-center justify-content-center p-field-checkbox mr-5 entry-label">
                     <label for="startRange" class="mr-1">Start Weight Range</label>
                     <TreeSelect id="startRange" v-model="startWeightRangeSelected"
                         :options="weightRangeOptions" placeholder="Start Weight Range"/>
                 </div>
-                <div class="flex align-items-center justify-content-center p-field-checkbox">
+                <div class="flex align-items-center justify-content-center p-field-checkbox  entry-label">
                     <label for="endRange" class="mr-1">End Weight Range</label>
                     <TreeSelect id="endRange" v-model="endWeightRangeSelected"
                         :options="weightRangeOptions" placeholder="End Weight Range"/>
@@ -105,5 +105,18 @@ const search = () => {
 
     .p-tree {
         padding: 0 !important;
+    }
+
+    .entry-label > label {
+      color: white;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .entry-label-weight {
+      color: white;
+      font-weight: 900;
+      font-size: 1.15rem;
+      margin-right: 0.5rem;
     }
 </style>

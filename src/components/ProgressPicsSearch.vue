@@ -4,14 +4,14 @@
   </div>
 
   <!-- Non-empty -->
-  <div id="photos" style="background-color: var(--blue-100)" v-if="!loading && posts.length > 0"
+  <div id="photos" v-if="!loading && posts.length > 0"
     ref='scrollComponent'>
     <div class="grid font-bold text-white border-round m-2" >
       <div class="xl:col-6 lg:col-6 md:col-6 sm:col-12 pb-0 pt-0"
         v-for="post in posts"
         :key="post.id"
       >
-        <div class="post bg-white border-round shadow-2 w-full mb-3">
+        <div class="post border-round shadow-2 w-full mb-3 bg-primary">
           <Post :post="post" />
         </div>
 
