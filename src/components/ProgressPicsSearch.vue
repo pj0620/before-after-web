@@ -1,5 +1,5 @@
 <template>
-  <div class="search m-3 shadow-2">
+  <div class="ml-3 mr-3 mt-1 shadow-2">
     <Searchbar @search="search" />
   </div>
 
@@ -114,4 +114,5 @@ onUnmounted(() => {
   .in-article-ad {
     min-width: 250px;
   }
+
 </style>

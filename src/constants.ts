@@ -11,4 +11,5 @@ export const Constants = {
   AD_PROB: 0,
   POSTS_LIMIT: 10,
   ENV: Environment.PROD,
+  INCLUDE_SOURCE: false,
 } as const;

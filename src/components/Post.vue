@@ -16,7 +16,7 @@
             {{getDateDesc(post.createdAt)}}
         </div>
     </div>
-    <div class="flex flex-row flex-wrap justify-content-between mb-3">
+    <div v-if="Constants.INCLUDE_SOURCE" class="flex flex-row flex-wrap justify-content-between mb-3">
         <a :href="post.originalPost" target="_blank">
             source
         </a>
@@ -46,6 +46,7 @@ import {
   PropType, ref, defineProps, computed,
 } from 'vue';
 import { BeforeAfterPicture } from '@/models';
+import { Constants } from '@/constants';
 
 const props = defineProps({
   post: {
