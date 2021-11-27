@@ -99,6 +99,10 @@ const search = () => {
 </script>
 
 <style>
+    .p-treeselect-label {
+      color: #6c757d;
+    }
+
     button.p-tree-toggler {
         display: none;
     }
