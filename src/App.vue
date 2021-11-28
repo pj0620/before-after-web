@@ -30,11 +30,11 @@
   }
 
   .pi-bars {
-    font-size: 1.4rem !important;
+    font-size: 1.3rem !important;
   }
 
   .p-menubar-button {
-    right: 2rem;
+    right: 0.2rem;
     position:absolute; 
   }
 

@@ -65,14 +65,17 @@ const SM_WIDTH = 576;
 const MD_WIDTH = 768;
 const mobileMode = ref();
 const updateViewMode = () => {
-  const width = window.innerWidth;
+  const width = document.documentElement.clientWidth;
   if (width < SM_WIDTH) {
+    console.log('sm');
     mobileMode.value = 'sm';
   }
-  else if (width < MD_WIDTH) {
+  else if (width <= MD_WIDTH) {
+    console.log('md');
     mobileMode.value = 'md';
   }
   else {
+    console.log('lg');
     mobileMode.value = 'lg';
   }
 }

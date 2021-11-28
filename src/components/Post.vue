@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import Tag from 'primevue/tag';
 import {
-  PropType, ref, defineProps, computed,
+  PropType, ref, defineProps, computed, onMounted, onUnmounted,
 } from 'vue';
 import { BeforeAfterPicture } from '@/models';
 import { Constants } from '@/constants';
@@ -56,26 +56,28 @@ const props = defineProps({
 });
 const post = ref(props.post);
 
-// iframe scaling
+// for switiching searchbar
 const SM_WIDTH = 576;
 const MD_WIDTH = 768;
-const screenWidth = computed(() => Math.max(
-  document.documentElement.clientWidth || 0,
-  window.innerWidth || 0,
-));
-const finalWidth = computed(() => {
-  if (screenWidth.value <= MD_WIDTH) {
-    return Math.floor(0.85 * screenWidth.value);
+const finalWidth = ref();
+const updateWidth = () => {
+  const width = document.documentElement.clientWidth;
+  if (width <= MD_WIDTH) {
+    finalWidth.value = Math.floor(0.85 * width);
   }
-  return Math.floor(0.45 * screenWidth.value);
-});
+  else {
+    finalWidth.value = Math.floor(0.45 * width);
+  }
+}
+updateWidth();
+onMounted(() => window.addEventListener('resize', updateWidth))
+onUnmounted(() => window.removeEventListener('resize', updateWidth))
 const scaleFactor = computed(() => finalWidth.value / post.value.imageWidth!);
 const finalHeight = computed(() => Math.floor(scaleFactor.value * post.value.imageHeight!));
 const iframeCss = computed(() => {
   let css = 'overflow:hidden;margin:0 auto;'
   + `width:${post.value.imageWidth};`;
 
-  // if (screenWidth.value <= SM_WIDTH) {
   css += `-ms-zoom: ${scaleFactor.value};`
     + `-moz-transform: scale(${scaleFactor.value});`
     + '-moz-transform-origin: 0 0;'
@@ -83,7 +85,6 @@ const iframeCss = computed(() => {
     + '-o-transform-origin: 0 0;'
     + `-webkit-transform: scale(${scaleFactor.value});`
     + '-webkit-transform-origin: 0 0;';
-  // }
 
   return css;
 });
