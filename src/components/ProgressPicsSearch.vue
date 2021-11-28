@@ -1,6 +1,8 @@
 <template>
   <div class="ml-3 mr-3 mt-1 shadow-2">
-    <Searchbar @search="search" />
+    <SearchbarSmall v-if="mobileMode === 'sm'" @search="search"/>
+    <SearchbarMedium v-else-if="mobileMode === 'md'" @search="search"/>
+    <Searchbar v-else @search="search" /> 
   </div>
 
   <!-- Non-empty -->
@@ -33,11 +35,14 @@
 
 <script setup lang="ts">
 import {
-  onMounted, onUnmounted, reactive, ref,
+computed,
+  onMounted, onUnmounted, reactive, ref, watch,
 } from 'vue';
 import { BeforeAfterPicture } from '@/models';
 import { BeforeAfterPicsService } from '../services';
-import Searchbar from './Searchbar.vue';
+import Searchbar from './searchbars/Searchbar.vue';
+import SearchbarMedium from './searchbars/SearchbarMedium.vue';
+import SearchbarSmall from './searchbars/SearchbarSmall.vue';
 import Post from './Post.vue';
 import { SearchParams } from '@/models/search-params.model';
 import InArticleAd from './InArticleAd.vue';
@@ -54,6 +59,27 @@ BeforeAfterPicsService.getPosts({ limit: postsLimit }).then((resp: BeforeAfterPi
   loading.value = false;
   posts.splice(0, posts.length, ...resp);
 });
+
+// for switiching searchbar
+const SM_WIDTH = 576;
+const MD_WIDTH = 768;
+const mobileMode = ref();
+const updateViewMode = () => {
+  const width = window.innerWidth;
+  if (width < SM_WIDTH) {
+    mobileMode.value = 'sm';
+  }
+  else if (width < MD_WIDTH) {
+    mobileMode.value = 'md';
+  }
+  else {
+    mobileMode.value = 'lg';
+  }
+}
+updateViewMode();
+onMounted(() => window.addEventListener('resize', updateViewMode))
+onUnmounted(() => window.removeEventListener('resize', updateViewMode))
+
 
 let searchParams:Partial<SearchParams>|null = null;
 const search = (searchParamsIn: Partial<SearchParams>) => {

@@ -1,8 +1,8 @@
 <template>
     <div class="card bg-primary">
         <div class="flex flex-column card-container green-container">
-            <div class="flex  flex-wrap card-container">
-                <div class="flex flex-column md:flex-row align-items-center justify-content-center
+            <div class="flex flex-wrap card-container">
+                <div class="flex flex-row align-items-center justify-content-center
                   pt-2 pl-2 pb-2">
                     <h3 class="entry-label-weight">Start Weight</h3>
                     <InputNumber v-model="startWeight" class="mr-4" showButtons suffix=" lbs"/>
