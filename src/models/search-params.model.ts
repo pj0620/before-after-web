@@ -2,9 +2,9 @@
 
 export interface SearchParams {
     start_weight?: number,
-    start_weight_range: number,
+    start_weight_range?: number,
     end_weight?: number,
-    end_weight_range: number,
+    end_weight_range?: number,
     nsfw?: boolean,
     age?: number,
     age_range?: number,

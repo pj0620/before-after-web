@@ -1,43 +1,58 @@
 <template>
-    <div class="flex flex-row flex-wrap justify-content-between mb-1">
-        <div class="flex text-white heading-text">
-            {{buildTitle(post)}}
-        </div>
-        <div class="top-auto bottom-auto" v-if="post.nsfw">
-            <Tag value="nsfw" severity="danger"></Tag>
-        </div>
-    </div>
-    <div class="flex flex-row flex-wrap justify-content-between mb-1">
-        <div class="flex text-white subheading-text">
-            {{post.gender? post.gender=="M" ? "Male," : "Female," : "" }}
-            {{post.age}}
-        </div>
-        <div class="flex text-white subheading-text">
-            {{getDateDesc(post.createdAt)}}
-        </div>
-    </div>
-    <div v-if="Constants.INCLUDE_SOURCE" class="flex flex-row flex-wrap justify-content-between mb-3">
-        <a :href="post.originalPost" target="_blank">
-            source
-        </a>
-    </div>
-    <div v-if="post.imageUrl.includes('redditmedia')">
-      <div class="overall-scalable"
-      :width="post.imageWidth!" :height="post.imageHeight!"
-      :style="`width: ${finalWidth}px; height: ${finalHeight}px;`">
-        <iframe
-            :width="post.imageWidth!" :height="post.imageHeight!"
-            class="scalable"
-            :title="post.description" scrolling="no"
-            sandbox="allow-forms allow-orientation-lock allow-presentation allow-same-origin
-            allow-scripts allow-top-navigation-by-user-activation"
-            :src="post.imageUrl" allowfullscreen
-            :style="iframeCss"
-            >
-        </iframe>
+    <a @click="gotoPost">
+      <div class="flex flex-row flex-wrap justify-content-between mb-1">
+          <div class="flex text-white heading-text">
+              {{buildTitle(post)}}
+          </div>
       </div>
-    </div>
-    <img :src="post.imageUrl" style="max-width: 90%; max-height: 70vh;" v-else/>
+      <div class="flex flex-row flex-wrap justify-content-between mb-1">
+          <div class="flex flew-row text-white subheading-text">
+              <i class="flex align-items-center pi pi-thumbs-up mr-1 pb-1"></i>
+              <p class="flex align-items-center my-0 mr-2">{{post.likes}}</p>
+              <i class="flex align-items-center pi pi-comment mr-1"></i>
+              <p class="flex align-items-center my-0">{{post.comments}}</p>
+              <Tag value="nsfw" severity="danger" class="flex align-items-center ml-2" v-if="post.nsfw"></Tag>
+          </div>
+
+          <div class="flex flew-row text-white subheading-text">
+              <i class="flex align-items-center pi pi-share-alt mr-2"></i>
+              <a href="flex align-items-center url text-white">
+                Share
+              </a>
+          </div>
+      </div>
+      <div class="flex flex-row flex-wrap justify-content-between mb-1">
+          <div class="flex text-white subheading-text">
+              {{post.gender? post.gender=="M" ? "Male," : "Female," : "" }}
+              {{post.age}}
+          </div>
+          <div class="flex text-white subheading-text">
+              {{getDateDesc(post.createdAt)}}
+          </div>
+      </div>
+      <div v-if="Constants.INCLUDE_SOURCE" class="flex flex-row flex-wrap justify-content-between mb-3">
+          <a :href="post.originalPost" target="_blank">
+              source
+          </a>
+      </div>
+      <div v-if="post.imageUrl?.includes('redditmedia')">
+        <div class="overall-scalable"
+        :width="post.imageWidth!" :height="post.imageHeight!"
+        :style="`width: ${finalWidth}px; height: ${finalHeight}px;`">
+          <iframe
+              :width="post.imageWidth!" :height="post.imageHeight!"
+              class="scalable"
+              :title="post.description" scrolling="no"
+              sandbox="allow-forms allow-orientation-lock allow-presentation allow-same-origin
+              allow-scripts allow-top-navigation-by-user-activation"
+              :src="post.imageUrl" allowfullscreen
+              :style="iframeCss"
+              >
+          </iframe>
+        </div>
+      </div>
+      <img :src="post.imageUrl" style="max-width: 90%; max-height: 70vh;" v-else/>
+    </a>
 </template>
 
 <script setup lang="ts">
@@ -47,6 +62,7 @@ import {
 } from 'vue';
 import { BeforeAfterPicture } from '@/models';
 import { Constants } from '@/constants';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   post: {
@@ -55,6 +71,16 @@ const props = defineProps({
   },
 });
 const post = ref(props.post);
+
+const router = useRouter();
+function gotoPost() {
+  router.push({
+    path: '/post', 
+    query: {
+      id: post.value.id
+    }
+  });
+}
 
 // for switiching searchbar
 const SM_WIDTH = 576;
@@ -149,4 +175,8 @@ function getDateDesc(date:number): string {
     font-size: 1rem;
     font-weight: lighter;
   }
+
+  a {
+  color: white;
+}
 </style>

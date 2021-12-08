@@ -2,17 +2,13 @@
     <div class="card bg-primary">
         <div class="flex flex-column card-container green-container">
             <div class="flex flex-wrap card-container">
-                <div class="flex flex-column align-items-center justify-content-center
+                <div class="flex flex-row align-items-center justify-content-center
                   pt-2 pl-2 pb-2">
-                    <div class="flex flex-row align-content-center">
-                      <h3 class="flex align-items-center justify-content-center entry-label-weight">Start Weight</h3>
-                      <InputNumber class="flex align-items-center justify-content-center weight-input" v-model="startWeight" showButtons suffix=" lbs"/>
-                    </div>
-                    <div class="flex flex-row align-content-center">
-                      <h3 class="align-items-center justify-content-center entry-label-weight">End Weight</h3>
-                      <InputNumber class="align-items-center justify-content-center weight-input" v-model="endWeight" showButtons suffix=" lbs"/>
-                    </div>
-                    <Button label="Find Photos" class="flex ml-3 border-white border-3 border-round text-lg font-bold" @click="search"/>
+                    <h3 class="entry-label-weight">Start Weight</h3>
+                    <InputNumber v-model="startWeight" class="mr-4" showButtons suffix=" lbs"/>
+                    <h3 class="entry-label-weight">End Weight</h3>
+                    <InputNumber v-model="endWeight" showButtons suffix=" lbs"/>
+                    <Button label="Find Photos" class="ml-3 border-white border-3 border-round text-lg font-bold" @click="search"/>
                 </div>
             </div>
             <div class="flex flex-row flex-wrap card-container h-full pl-2 pb-2">
@@ -25,16 +21,6 @@
                     <label for="gender-select" class="mr-1">Gender</label>
                     <TreeSelect id="gender-select" v-model="genderSelected"
                         :options="genderOptions" placeholder="Both"/>
-                </div>
-                <div class="flex align-items-center justify-content-center p-field-checkbox mr-5 entry-label">
-                    <label for="startRange" class="mr-1">Start Weight Range</label>
-                    <TreeSelect id="startRange" v-model="startWeightRangeSelected"
-                        :options="weightRangeOptions" placeholder="Start Weight Range"/>
-                </div>
-                <div class="flex align-items-center justify-content-center p-field-checkbox  entry-label">
-                    <label for="endRange" class="mr-1">End Weight Range</label>
-                    <TreeSelect id="endRange" v-model="endWeightRangeSelected"
-                        :options="weightRangeOptions" placeholder="End Weight Range"/>
                 </div>
             </div>
         </div>
@@ -67,23 +53,10 @@ const genderOptions = [
   { key: 'B', label: 'Both' },
 ];
 
-const startWeightRangeSelected = ref({ 5: true });
-const endWeightRangeSelected = ref({ 5: true });
-const weightRanges = [1, 3, 5, 10, 50];
-const weightRangeOptions = weightRanges.map(
-  (weight:number) => ({
-    key: weight.toString(),
-    label: `±${weight} lbs`,
-    data: weight.toString(),
-  }),
-);
-
 const search = () => {
   const searchParams:Partial<SearchParams> = {
     start_weight: startWeight.value,
-    start_weight_range: parseInt(Object.getOwnPropertyNames(startWeightRangeSelected.value)[0], 10),
     end_weight: endWeight.value,
-    end_weight_range: parseInt(Object.getOwnPropertyNames(endWeightRangeSelected.value)[0], 10),
   };
 
   if (Object.prototype.hasOwnProperty.call(genderSelected.value, 'M')) {
@@ -126,9 +99,5 @@ const search = () => {
       font-weight: 900;
       font-size: 1.15rem;
       margin-right: 0.5rem;
-    }
-
-    .weight-input {
-      /* height: 1rem; */
     }
 </style>

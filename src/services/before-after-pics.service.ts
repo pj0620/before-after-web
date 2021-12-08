@@ -17,6 +17,26 @@ export class BeforeAfterPicsService {
     console.error('error while getting posts');
     return [];
   }
+
+  public static async getPostById(id: number): 
+    Promise<BeforeAfterPicture> {
+    try {
+      const res = await axios({
+        method: 'get',
+        url: Constants.BASE_URL + Constants.POSTS + "/" + id,
+        data: null
+      });
+      if (res.status === 200) {
+        return res.data as BeforeAfterPicture;
+      }
+      else {
+        throw Error("image not found");
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
 }
 
 export class MockPostsService {
@@ -58,6 +78,8 @@ export class MockPostsService {
           description: this.DESC,
           originalPost: this.POSTURLS[urlIdx],
           imageUrl: this.IMAGEURLS[urlIdx],
+          likes: 111,
+          comments: 0
         });
       }
 

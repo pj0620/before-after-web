@@ -12,4 +12,6 @@ export interface BeforeAfterPicture {
   imageUrl: string;
   imageWidth?: number;
   imageHeight?: number;
+  comments: number;
+  likes: number;
 }

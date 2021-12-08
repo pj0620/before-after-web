@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import ProgressPicsSearch from '../components/ProgressPicsSearch.vue';
+import ProgressPicsSearch from '../components/search-page/ProgressPicsSearch.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -10,12 +10,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/privacy-policy',
     name: 'Privacy Policy',
-    component: () => import('../components/PrivacyPolicy.vue'),
+    component: () => import('../components/info-pages/PrivacyPolicy.vue'),
   },
   {
     path: '/contact-info',
     name: 'Contact Info',
-    component: () => import('../components/ContactInfo.vue'),
+    component: () => import('../components/info-pages/ContactInfo.vue'),
+  },
+  {
+    path: '/post',
+    name: 'Before After Picture',
+    component: () => import('../components/post-details/SinglePost.vue'),
   },
 ];
 

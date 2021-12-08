@@ -1,5 +1,5 @@
 <template>
-  <div class="ml-3 mr-3 mt-1 shadow-2">
+  <div class="mx-3 mt-1 shadow-2">
     <SearchbarSmall v-if="mobileMode === 'sm'" @search="search"/>
     <SearchbarMedium v-else-if="mobileMode === 'md'" @search="search"/>
     <Searchbar v-else @search="search" /> 
@@ -35,17 +35,16 @@
 
 <script setup lang="ts">
 import {
-computed,
-  onMounted, onUnmounted, reactive, ref, watch,
+  onMounted, onUnmounted, reactive, ref
 } from 'vue';
 import { BeforeAfterPicture } from '@/models';
-import { BeforeAfterPicsService } from '../services';
+import { BeforeAfterPicsService } from '../../services';
 import Searchbar from './searchbars/Searchbar.vue';
 import SearchbarMedium from './searchbars/SearchbarMedium.vue';
 import SearchbarSmall from './searchbars/SearchbarSmall.vue';
-import Post from './Post.vue';
+import Post from '../Post.vue';
 import { SearchParams } from '@/models/search-params.model';
-import InArticleAd from './InArticleAd.vue';
+import InArticleAd from '../info-pages/InArticleAd.vue';
 import { Constants } from '@/constants';
 
 let postsOffset = 0;
@@ -67,15 +66,12 @@ const mobileMode = ref();
 const updateViewMode = () => {
   const width = document.documentElement.clientWidth;
   if (width < SM_WIDTH) {
-    console.log('sm');
     mobileMode.value = 'sm';
   }
   else if (width <= MD_WIDTH) {
-    console.log('md');
     mobileMode.value = 'md';
   }
   else {
-    console.log('lg');
     mobileMode.value = 'lg';
   }
 }
