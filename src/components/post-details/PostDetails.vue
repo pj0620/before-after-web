@@ -57,6 +57,8 @@
     function buildTitle(post: BeforeAfterPicture) {
         return `${post.startWeight} lbs → ${post.endWeight} lbs (${post.weightChange} lbs)`;
     }
+
+    
 </script>
 
 <style scoped>

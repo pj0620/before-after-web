@@ -7,16 +7,16 @@
       </div>
       <div class="flex flex-row flex-wrap justify-content-between mb-1">
           <div class="flex flew-row text-white subheading-text">
-              <i class="flex align-items-center pi pi-thumbs-up mr-1 pb-1"></i>
-              <p class="flex align-items-center my-0 mr-2">{{post.likes}}</p>
-              <i class="flex align-items-center pi pi-comment mr-1"></i>
-              <p class="flex align-items-center my-0">{{post.comments}}</p>
+              <i class="flex align-items-center pi pi-thumbs-up mr-1 pb-1 post-subtext"></i>
+              <p class="flex align-items-center my-0 mr-2 post-subtext">{{post.likes}}</p>
+              <i class="flex align-items-center pi pi-comment mr-1 post-subtext"></i>
+              <p class="flex align-items-center my-0 post-subtext">{{post.comments}}</p>
               <Tag value="nsfw" severity="danger" class="flex align-items-center ml-2" v-if="post.nsfw"></Tag>
           </div>
 
           <div class="flex flew-row text-white subheading-text">
-              <i class="flex align-items-center pi pi-share-alt mr-2"></i>
-              <a href="flex align-items-center url text-white">
+              <i class="flex align-items-center pi pi-share-alt mr-2 post-subtext"></i>
+              <a href="flex align-items-center url text-white post-subtext">
                 Share
               </a>
           </div>
@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import Tag from 'primevue/tag';
 import {
-  PropType, ref, defineProps, computed, onMounted, onUnmounted,
+  PropType, ref, defineProps, computed, onMounted, onUnmounted, Ref,
 } from 'vue';
 import { BeforeAfterPicture } from '@/models';
 import { Constants } from '@/constants';
@@ -69,8 +69,10 @@ const props = defineProps({
     type: Object as PropType<BeforeAfterPicture>,
     required: true,
   },
+  alwaysFullSize: Boolean
 });
 const post = ref(props.post);
+const alwaysFullSize: Ref<Boolean> = ref<Boolean>(props.alwaysFullSize);
 
 const router = useRouter();
 function gotoPost() {
@@ -87,12 +89,16 @@ const SM_WIDTH = 576;
 const MD_WIDTH = 768;
 const finalWidth = ref();
 const updateWidth = () => {
+  if (alwaysFullSize.value) {
+    return post.value.imageWidth;
+  }
+
   const width = document.documentElement.clientWidth;
   if (width <= MD_WIDTH) {
     finalWidth.value = Math.floor(0.85 * width);
   }
   else {
-    finalWidth.value = Math.floor(0.45 * width);
+    finalWidth.value = Math.floor(0.43 * width);
   }
 }
 updateWidth();

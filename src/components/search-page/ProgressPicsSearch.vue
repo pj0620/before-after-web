@@ -44,7 +44,7 @@ import SearchbarMedium from './searchbars/SearchbarMedium.vue';
 import SearchbarSmall from './searchbars/SearchbarSmall.vue';
 import Post from '../Post.vue';
 import { SearchParams } from '@/models/search-params.model';
-import InArticleAd from '../info-pages/InArticleAd.vue';
+import InArticleAd from '../InArticleAd.vue';
 import { Constants } from '@/constants';
 
 let postsOffset = 0;
