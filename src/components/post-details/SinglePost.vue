@@ -8,10 +8,10 @@
             />
         </div>
 
-        <RelatedPosts
+        <!-- <RelatedPosts
             v-if="relatedPosts.length > 0"
             :posts="relatedPosts"
-        />
+        /> -->
     </div>
 
     <ProgressSpinner v-else/>
