@@ -7,21 +7,22 @@
       </div>
       <div class="flex flex-row flex-wrap justify-content-between mb-1">
           <div class="flex flew-row text-white subheading-text">
-              <i class="flex align-items-center pi pi-thumbs-up mr-1 pb-1 post-subtext"></i>
+              <!-- <i class="flex align-items-center pi pi-thumbs-up mr-1 pb-1 post-subtext" @click="toggleLike"></i> -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="like-button" viewBox="0 0 24 24"><g id="thumbs-up"><path fill="#FFFFFF" d="M17.25,20.75H5.63a2.38,2.38,0,0,1-2.38-2.36V12.75a2.38,2.38,0,0,1,2.38-2.37h2l2.73-6.09a1.75,1.75,0,0,1,2.27-.9A3.16,3.16,0,0,1,14.51,6.3V8.77h4a.51.51,0,0,1,.17,0,2.56,2.56,0,0,1,1.58,1,2.3,2.3,0,0,1,.44,1.68L19.6,18.74A2.38,2.38,0,0,1,17.25,20.75Zm-8.43-1.5h8.43a.87.87,0,0,0,.87-.73l1.12-7.26a.72.72,0,0,0-.16-.56,1.12,1.12,0,0,0-.66-.42H13.75A.74.74,0,0,1,13,9.52V6.3a1.66,1.66,0,0,0-1-1.53.24.24,0,0,0-.31.13L8.82,11.29ZM5.63,11.88a.87.87,0,0,0-.88.87v5.64a.87.87,0,0,0,.88.86H7.32V11.88Z"/></g></svg>
               <p class="flex align-items-center my-0 mr-2 post-subtext">{{post.likes}}</p>
-              <i class="flex align-items-center pi pi-comment mr-1 post-subtext"></i>
+              <i class="flex align-items-center pi pi-comment post-subtext comment-icon"></i>
               <p class="flex align-items-center my-0 post-subtext">{{post.comments}}</p>
               <Tag value="nsfw" severity="danger" class="flex align-items-center ml-2" v-if="post.nsfw"></Tag>
           </div>
 
-          <div class="flex flew-row text-white subheading-text">
-              <i class="flex align-items-center pi pi-share-alt mr-2 post-subtext"></i>
-              <a href="flex align-items-center url text-white post-subtext">
+          <div class="flex flex-row text-white subheading-text">
+              <i class="flex align-items-center pi pi-share-alt mr-2 share-icon"></i>
+              <a class="flex align-items-center text-white post-subtext share-text" href="https://google.com">
                 Share
               </a>
           </div>
       </div>
-      <div class="flex flex-row flex-wrap justify-content-between mb-1">
+      <div class="flex flex-row flex-wrap justify-content-between">
           <div class="flex text-white subheading-text">
               {{post.gender? post.gender=="M" ? "Male," : "Female," : "" }}
               {{post.age}}
@@ -30,8 +31,8 @@
               {{getDateDesc(post.createdAt)}}
           </div>
       </div>
-      <div v-if="Constants.INCLUDE_SOURCE" class="flex flex-row flex-wrap justify-content-between mb-3">
-          <a :href="post.originalPost" target="_blank">
+      <div v-if="Constants.INCLUDE_SOURCE" class="flex flex-row flex-wrap justify-content-between">
+          <a :href="post.originalPost" class="source-text" target="_blank">
               source
           </a>
       </div>
@@ -63,16 +64,33 @@ import {
 import { BeforeAfterPicture } from '@/models';
 import { Constants } from '@/constants';
 import { useRouter } from 'vue-router';
+import { useCookies } from "vue3-cookies";
 
 const props = defineProps({
   post: {
     type: Object as PropType<BeforeAfterPicture>,
     required: true,
   },
-  alwaysFullSize: Boolean
+  alwaysFullSize: {
+    type: Boolean,
+    required: false
+  },
+  threeSplitEnabled: {
+    type: Boolean,
+    required: false
+  },
 });
 const post = ref(props.post);
 const alwaysFullSize: Ref<Boolean> = ref<Boolean>(props.alwaysFullSize);
+
+const { cookies } = useCookies();
+console.log(cookies);
+
+const cookieKey = "post/" + post.value.id
+const liked = ref(cookies.get(cookieKey) === 'true');
+function toggleLike() {
+  console.log(liked.value);
+}
 
 const router = useRouter();
 function gotoPost() {
@@ -84,9 +102,12 @@ function gotoPost() {
   });
 }
 
+
+
 // for switiching searchbar
 const SM_WIDTH = 576;
 const MD_WIDTH = 768;
+const LG_WIDTH = 992;
 const finalWidth = ref();
 const updateWidth = () => {
   if (alwaysFullSize.value) {
@@ -94,11 +115,19 @@ const updateWidth = () => {
   }
 
   const width = document.documentElement.clientWidth;
-  if (width <= MD_WIDTH) {
+  if (width <= SM_WIDTH) {
     finalWidth.value = Math.floor(0.85 * width);
   }
-  else {
+  else if (width <= MD_WIDTH) {
+    finalWidth.value = Math.floor(0.85 * width);
+  }
+  else if (width <= LG_WIDTH) {
     finalWidth.value = Math.floor(0.43 * width);
+  }
+  else {
+    finalWidth.value = props.threeSplitEnabled ? 
+      Math.floor(0.29 * width) :
+      Math.floor(0.43 * width);
   }
 }
 updateWidth();
@@ -161,6 +190,18 @@ function getDateDesc(date:number): string {
 </script>
 
 <style>
+  /* .thumbs-up-filled::before {
+    content:url("data:image/svg+xml,");
+    width: 2.5rem;
+    fill:white;
+  } */
+
+  .like-button {
+    color:white;
+    width: 1.4rem;
+    padding-bottom: 0.2rem;
+  }
+
   .overall-scalable {
     overflow: hidden; 
     -webkit-transition: all 1s;
@@ -178,11 +219,24 @@ function getDateDesc(date:number): string {
   }
 
   .subheading-text {
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: lighter;
   }
 
   a {
-  color: white;
-}
+    color: white;
+  }
+
+  a.source-text {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .comment-icon{
+    margin-right: 0.2rem;
+  }
+
+  .share-icon {
+    font-size: 1rem;
+  }
 </style>

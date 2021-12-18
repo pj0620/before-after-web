@@ -60,8 +60,8 @@ BeforeAfterPicsService
         font-size: 1.8rem;
     }
 
-    ::v-deep #mainPost a {
-        font-size: 1.8rem;
+    ::v-deep #mainPost .share-icon {
+        font-size: 1.2rem;
     }
 
     ::v-deep #mainPost .heading-text {
@@ -70,5 +70,24 @@ BeforeAfterPicsService
 
     .post {
         padding: 0.5rem;
+    }
+
+    ::v-deep #mainPost .like-button {
+        color:white;
+        width: 2.4rem;
+        padding-bottom: 0.2rem;
+        margin-right: 0.1rem;
+    }
+
+    ::v-deep #mainPost a.share-text {
+        font-size: 1.1rem;
+    }
+
+    ::v-deep #mainPost .comment-icon{
+        margin-right: 0.4rem;
+    }
+
+    ::v-deep #mainPost .subheading-text{
+        font-size: 1.1rem;
     }
 </style>
