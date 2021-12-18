@@ -8,13 +8,13 @@
       <div class="flex flex-row flex-wrap justify-content-between mb-1">
           <div class="flex flew-row text-white subheading-text">
               <!-- <i class="flex align-items-center pi pi-thumbs-up mr-1 pb-1 post-subtext" @click="toggleLike"></i> -->
-              <svg v-if="liked" @click="toggleLike" class="like-button" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg v-if="liked" @click="dislikePost" class="like-button" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <g fill="none" stroke="#fffffe">
                 <path d="m17.25 20.75h-11.62c-1.3067 4.6e-5 -2.369-1.0534-2.38-2.36v-5.64c0.00551-1.3105 1.0695-2.37 2.38-2.37h2l2.73-6.09c0.38776-0.86557 1.3945-1.2647 2.27-0.9 1.1499 0.50943 1.8883 1.6523 1.88 2.91v2.47h4c0.05627-0.00951 0.11373-0.00951 0.17 0 0.63392 0.12219 1.1983 0.47937 1.58 1 0.36058 0.48098 0.51851 1.084 0.44 1.68l-1.1 7.29c-0.18208 1.1569-1.1788 2.0095-2.35 2.01z" fill="#fff" stroke="none"/>
                 </g>
               </svg>
-              <svg v-else @click="toggleLike" xmlns="http://www.w3.org/2000/svg" class="like-button" viewBox="0 0 24 24"><g id="thumbs-up"><path fill="#FFFFFF" d="M17.25,20.75H5.63a2.38,2.38,0,0,1-2.38-2.36V12.75a2.38,2.38,0,0,1,2.38-2.37h2l2.73-6.09a1.75,1.75,0,0,1,2.27-.9A3.16,3.16,0,0,1,14.51,6.3V8.77h4a.51.51,0,0,1,.17,0,2.56,2.56,0,0,1,1.58,1,2.3,2.3,0,0,1,.44,1.68L19.6,18.74A2.38,2.38,0,0,1,17.25,20.75Zm-8.43-1.5h8.43a.87.87,0,0,0,.87-.73l1.12-7.26a.72.72,0,0,0-.16-.56,1.12,1.12,0,0,0-.66-.42H13.75A.74.74,0,0,1,13,9.52V6.3a1.66,1.66,0,0,0-1-1.53.24.24,0,0,0-.31.13L8.82,11.29ZM5.63,11.88a.87.87,0,0,0-.88.87v5.64a.87.87,0,0,0,.88.86H7.32V11.88Z"/></g></svg>
-              <p class="flex align-items-center my-0 mr-2 post-subtext">{{post.likes}}</p>
+              <svg v-else @click="likePost" xmlns="http://www.w3.org/2000/svg" class="like-button" viewBox="0 0 24 24"><g id="thumbs-up"><path fill="#FFFFFF" d="M17.25,20.75H5.63a2.38,2.38,0,0,1-2.38-2.36V12.75a2.38,2.38,0,0,1,2.38-2.37h2l2.73-6.09a1.75,1.75,0,0,1,2.27-.9A3.16,3.16,0,0,1,14.51,6.3V8.77h4a.51.51,0,0,1,.17,0,2.56,2.56,0,0,1,1.58,1,2.3,2.3,0,0,1,.44,1.68L19.6,18.74A2.38,2.38,0,0,1,17.25,20.75Zm-8.43-1.5h8.43a.87.87,0,0,0,.87-.73l1.12-7.26a.72.72,0,0,0-.16-.56,1.12,1.12,0,0,0-.66-.42H13.75A.74.74,0,0,1,13,9.52V6.3a1.66,1.66,0,0,0-1-1.53.24.24,0,0,0-.31.13L8.82,11.29ZM5.63,11.88a.87.87,0,0,0-.88.87v5.64a.87.87,0,0,0,.88.86H7.32V11.88Z"/></g></svg>
+              <p class="flex align-items-center my-0 mr-2 post-subtext">{{likesStr(post.likes)}}</p>
               <i class="flex align-items-center pi pi-comment post-subtext comment-icon"></i>
               <p class="flex align-items-center my-0 post-subtext">{{post.comments}}</p>
               <Tag value="nsfw" severity="danger" class="flex align-items-center ml-2" v-if="post.nsfw"></Tag>
@@ -70,6 +70,7 @@ import { BeforeAfterPicture } from '@/models';
 import { Constants } from '@/constants';
 import { useRouter } from 'vue-router';
 import { useCookies } from "vue3-cookies";
+import { BeforeAfterPicsService } from '@/services';
 
 const props = defineProps({
   post: {
@@ -91,9 +92,18 @@ const alwaysFullSize: Ref<Boolean> = ref<Boolean>(props.alwaysFullSize);
 const { cookies } = useCookies();
 const cookieKey = "post/" + post.value.id
 const liked = ref(cookies.get(cookieKey) === 'true');
-function toggleLike() {
-  liked.value = !liked.value;
-  cookies.set(cookieKey, liked.value ? 'true' : 'false');
+async function likePost() {
+  liked.value = true;
+  await BeforeAfterPicsService.likePost(post.value.id);
+  cookies.set(cookieKey, 'true');
+  post.value.likes++;
+}
+async function dislikePost() {
+  console.log('dislike');
+  liked.value = false;
+  await BeforeAfterPicsService.dislikePost(post.value.id);
+  cookies.set(cookieKey, 'false');
+  post.value.likes--;
 }
 
 const router = useRouter();
@@ -190,6 +200,21 @@ function getDateDesc(date:number): string {
     return `${Math.ceil(diff / Duration.MONTH)} months ago`;
   }
   return `${Math.ceil(diff / Duration.YEAR)} years ago`;
+}
+
+function likesStr(likes:number):string {
+    if (likes < 1000) {
+        return likes.toString();
+    }
+    else if (likes < 1000000) {
+        return (Math.floor(likes/100)/10).toString() + "k";
+    }
+    else if (likes < 1000000000) {
+        return (Math.floor(likes/100000)/10).toString() + "M";
+    }
+    else {
+        return (Math.floor(likes/100000000)/10).toString() + "B";
+    }
 }
 </script>
 

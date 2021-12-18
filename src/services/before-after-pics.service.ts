@@ -37,6 +37,40 @@ export class BeforeAfterPicsService {
       throw e;
     }
   }
+
+  public static async likePost(id: number): 
+    Promise<void> {
+    try {
+      const res = await axios({
+        method: 'patch',
+        url: Constants.BASE_URL + Constants.POSTS + "/like" + "/" + id,
+        data: null
+      });
+      if (res.status !== 204) {
+        throw Error("cannot like post recieved " + res.status);
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  public static async dislikePost(id: number): 
+    Promise<void> {
+    try {
+      const res = await axios({
+        method: 'patch',
+        url: Constants.BASE_URL + Constants.POSTS + "/dislike" + "/" + id,
+        data: null
+      });
+      if (res.status != 204) {
+        throw Error("cannot like post recieved " + res.status);
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
 }
 
 export class MockPostsService {
