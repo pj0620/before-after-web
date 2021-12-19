@@ -14,9 +14,9 @@
                 </g>
               </svg>
               <svg v-else @click="likePost" xmlns="http://www.w3.org/2000/svg" class="like-button" viewBox="0 0 24 24"><g id="thumbs-up"><path fill="#FFFFFF" d="M17.25,20.75H5.63a2.38,2.38,0,0,1-2.38-2.36V12.75a2.38,2.38,0,0,1,2.38-2.37h2l2.73-6.09a1.75,1.75,0,0,1,2.27-.9A3.16,3.16,0,0,1,14.51,6.3V8.77h4a.51.51,0,0,1,.17,0,2.56,2.56,0,0,1,1.58,1,2.3,2.3,0,0,1,.44,1.68L19.6,18.74A2.38,2.38,0,0,1,17.25,20.75Zm-8.43-1.5h8.43a.87.87,0,0,0,.87-.73l1.12-7.26a.72.72,0,0,0-.16-.56,1.12,1.12,0,0,0-.66-.42H13.75A.74.74,0,0,1,13,9.52V6.3a1.66,1.66,0,0,0-1-1.53.24.24,0,0,0-.31.13L8.82,11.29ZM5.63,11.88a.87.87,0,0,0-.88.87v5.64a.87.87,0,0,0,.88.86H7.32V11.88Z"/></g></svg>
-              <p class="flex align-items-center my-0 mr-2 post-subtext">{{likesStr(post.likes)}}</p>
+              <p class="flex align-items-center my-0 mr-2 post-subtext">{{niceNumber(post.likes)}}</p>
               <i class="flex align-items-center pi pi-comment post-subtext comment-icon"></i>
-              <p class="flex align-items-center my-0 post-subtext">{{post.comments}}</p>
+              <p class="flex align-items-center my-0 post-subtext">{{niceNumber(post.comments)}}</p>
               <Tag value="nsfw" severity="danger" class="flex align-items-center ml-2" v-if="post.nsfw"></Tag>
           </div>
 
@@ -85,6 +85,10 @@ const props = defineProps({
     type: Boolean,
     required: false
   },
+  likeEnabled: {
+    type: Boolean,
+    required: false
+  },
 });
 const post = ref(props.post);
 const alwaysFullSize: Ref<Boolean> = ref<Boolean>(props.alwaysFullSize);
@@ -93,13 +97,18 @@ const { cookies } = useCookies();
 const cookieKey = "post/" + post.value.id
 const liked = ref(cookies.get(cookieKey) === 'true');
 async function likePost() {
+  if (!props.likeEnabled) {
+    return;
+  }
   liked.value = true;
   await BeforeAfterPicsService.likePost(post.value.id);
   cookies.set(cookieKey, 'true');
   post.value.likes++;
 }
 async function dislikePost() {
-  console.log('dislike');
+  if (!props.likeEnabled) {
+    return;
+  }
   liked.value = false;
   await BeforeAfterPicsService.dislikePost(post.value.id);
   cookies.set(cookieKey, 'false');
@@ -202,7 +211,7 @@ function getDateDesc(date:number): string {
   return `${Math.ceil(diff / Duration.YEAR)} years ago`;
 }
 
-function likesStr(likes:number):string {
+function niceNumber(likes:number):string {
     if (likes < 1000) {
         return likes.toString();
     }

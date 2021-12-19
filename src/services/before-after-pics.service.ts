@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BeforeAfterPicture } from '../models';
+import { CommentI } from '../models/comment.model';
 import { Constants } from '@/constants';
 import { SearchParams } from '@/models/search-params.model';
 
@@ -64,6 +65,49 @@ export class BeforeAfterPicsService {
         data: null
       });
       if (res.status != 204) {
+        throw Error("cannot like post recieved " + res.status);
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  public static async postComment(postId: number, body: string): 
+    Promise<CommentI> {
+    try {
+      const res = await axios({
+        method: 'post',
+        url: Constants.BASE_URL + Constants.COMMENTS,
+        data: {
+          body,
+          postId
+        }
+      });
+      if (res.status === 200) {
+        return res.data
+      }
+      else {
+        throw Error("cannot like post recieved " + res.status);
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  public static async getComments(postId: number): 
+    Promise<CommentI[]> {
+    try {
+      const res = await axios({
+        method: 'get',
+        url: Constants.BASE_URL + Constants.COMMENTS + "/" + postId,
+        data: null
+      });
+      if (res.status === 200) {
+        return res.data;
+      }
+      else {
         throw Error("cannot like post recieved " + res.status);
       }
     } catch (e) {

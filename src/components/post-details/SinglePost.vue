@@ -4,14 +4,20 @@
           <Post 
             :post="post"
             :alwaysFullSize="true"
+            :likeEnabled="true"
             id="mainPost"
             />
         </div>
 
-        <!-- <RelatedPosts
+        <CommentSection
+            :post="post"
+            @newComment="newComment"
+        />
+
+        <RelatedPosts
             v-if="relatedPosts.length > 0"
             :posts="relatedPosts"
-        /> -->
+        />
     </div>
 
     <ProgressSpinner v-else/>
@@ -21,19 +27,19 @@
 import { useRoute, useRouter } from 'vue-router';
 import { BeforeAfterPicsService } from '@/services';
 import { reactive, Ref, ref } from 'vue';
-import PostDetails from './PostDetails.vue';
 import RelatedPosts from './RelatedPosts.vue';
 import ProgressSpinner from 'primevue/progressspinner';
 import { BeforeAfterPicture } from '@/models';
 import _ from 'lodash';
 import Post from '../Post.vue';
+import CommentSection from './CommentSection.vue';
 
 const route = useRoute();
 const router = useRouter();
 
 // get post id from query params
-const postId: number = route.query.id;
-if (!postId) {
+const postId: number = route.query.id ? parseInt(route.query.id as any) : -1;
+if (!postId || postId === -1) {
     console.error('no id passed');
     router.push({
         path: '/'
@@ -42,17 +48,24 @@ if (!postId) {
 
 //grab from db
 const post: BeforeAfterPicture|{} = reactive<BeforeAfterPicture|{}>({});
-BeforeAfterPicsService
-    .getPostById(postId)
-    .then((resp) => Object.assign(post, resp))
-    .catch(() => console.error('error while getting post'));
-
-// related posts
 const relatedPosts: Ref<BeforeAfterPicture[]> = ref<BeforeAfterPicture[]>([]);
 BeforeAfterPicsService
-    .getPosts(_.pick(post,'startWeight', 'endWeight','gender'))
-    .then((resp) => relatedPosts.value.splice(0,0,...resp))
+    .getPostById(postId)
+    .then((resp) => {
+        Object.assign(post, resp)
+        BeforeAfterPicsService
+            .getPosts(_.pick(post,'startWeight', 'endWeight','gender'))
+            .then((resp) => {
+                resp = resp.filter((relatedPost) => relatedPost.id !== (post as BeforeAfterPicture).id)
+                relatedPosts.value.splice(0,0,...resp)
+            })
+            .catch(() => console.error('error while getting post'));
+    })
     .catch(() => console.error('error while getting post'));
+
+function newComment() {
+    (post as BeforeAfterPicture).comments++;
+}
 </script>
 
 <style scoped>

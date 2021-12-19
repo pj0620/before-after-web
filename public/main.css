@@ -1,8 +1,13 @@
 :root {
     --bg-color: #F5F5F5;
     --color-primary: var(--blue-500);
+    --color-secondary: var(--blue-500);
 }
 
 .bg-primary {
     background-color: var(--color-primary) !important;
+}
+
+.bg-secondary {
+    background-color: var(--color-secondary) !important;
 }
