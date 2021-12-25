@@ -18,9 +18,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../components/info-pages/ContactInfo.vue'),
   },
   {
-    path: '/post',
+    path: '/post/:id',
     name: 'Before After Picture',
     component: () => import('../components/post-details/SinglePost.vue'),
+    props: true
   },
 ];
 

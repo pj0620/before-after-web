@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import Tag from 'primevue/tag';
 import {
-  PropType, ref, defineProps, computed, onMounted, onUnmounted, Ref,
+  PropType, ref, defineProps, computed, onMounted, onUnmounted, Ref, reactive, watch,
 } from 'vue';
 import { BeforeAfterPicture } from '@/models';
 import { Constants } from '@/constants';
@@ -89,40 +89,49 @@ const props = defineProps({
     type: Boolean,
     required: false
   },
+  clickable: {
+    type: Boolean,
+    default:true
+  },
 });
-const post = ref(props.post);
+const post = reactive(props.post);
 const alwaysFullSize: Ref<Boolean> = ref<Boolean>(props.alwaysFullSize);
 
 const { cookies } = useCookies();
-const cookieKey = "post/" + post.value.id
+let cookieKey = "post/" + post.id;
 const liked = ref(cookies.get(cookieKey) === 'true');
+watch(post, (oldV,newV) => {
+  cookieKey = "post/" + post.id;
+  liked.value = cookies.get(cookieKey) === 'true';
+});
 async function likePost() {
   if (!props.likeEnabled) {
     return;
   }
+  await BeforeAfterPicsService.likePost(post.id);
   liked.value = true;
-  await BeforeAfterPicsService.likePost(post.value.id);
   cookies.set(cookieKey, 'true');
-  post.value.likes++;
+  post.likes++;
 }
 async function dislikePost() {
   if (!props.likeEnabled) {
     return;
   }
+  await BeforeAfterPicsService.dislikePost(post.id);
   liked.value = false;
-  await BeforeAfterPicsService.dislikePost(post.value.id);
   cookies.set(cookieKey, 'false');
-  post.value.likes--;
+  post.likes--;
 }
 
 const router = useRouter();
 function gotoPost() {
+  if (!props.clickable) {
+    return;
+  }
   router.push({
-    path: '/post', 
-    query: {
-      id: post.value.id
-    }
+    path: '/post/' + post.id
   });
+  window.scrollTo(0,0);
 }
 
 
@@ -134,7 +143,7 @@ const LG_WIDTH = 992;
 const finalWidth = ref();
 const updateWidth = () => {
   if (alwaysFullSize.value) {
-    return post.value.imageWidth;
+    return post.imageWidth;
   }
 
   const width = document.documentElement.clientWidth;
@@ -156,11 +165,11 @@ const updateWidth = () => {
 updateWidth();
 onMounted(() => window.addEventListener('resize', updateWidth))
 onUnmounted(() => window.removeEventListener('resize', updateWidth))
-const scaleFactor = computed(() => finalWidth.value / post.value.imageWidth!);
-const finalHeight = computed(() => Math.floor(scaleFactor.value * post.value.imageHeight!));
+const scaleFactor = computed(() => finalWidth.value / post.imageWidth!);
+const finalHeight = computed(() => Math.floor(scaleFactor.value * post.imageHeight!));
 const iframeCss = computed(() => {
   let css = 'overflow:hidden;margin:0 auto;'
-  + `width:${post.value.imageWidth};`;
+  + `width:${post.imageWidth};`;
 
   css += `-ms-zoom: ${scaleFactor.value};`
     + `-moz-transform: scale(${scaleFactor.value});`

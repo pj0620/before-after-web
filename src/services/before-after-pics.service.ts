@@ -15,8 +15,7 @@ export class BeforeAfterPicsService {
     if (res.status === 200) {
       return res.data as BeforeAfterPicture[];
     }
-    console.error('error while getting posts');
-    return [];
+    throw Error('error while getting posts');
   }
 
   public static async getPostById(id: number): 
