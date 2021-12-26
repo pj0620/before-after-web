@@ -1,4 +1,6 @@
 <template>
+    <Toast /> 
+
     <a @click="gotoPost">
       <div class="flex flex-row flex-wrap justify-content-between mb-1">
           <div class="flex text-white heading-text">
@@ -22,7 +24,7 @@
 
           <div class="flex flex-row text-white subheading-text">
               <i class="flex align-items-center pi pi-share-alt mr-2 share-icon"></i>
-              <a class="flex align-items-center text-white post-subtext share-text" href="https://google.com">
+              <a class="flex align-items-center text-white post-subtext share-text underline" @click="share">
                 Share
               </a>
           </div>
@@ -71,6 +73,8 @@ import { Constants } from '@/constants';
 import { useRouter } from 'vue-router';
 import { useCookies } from "vue3-cookies";
 import { BeforeAfterPicsService } from '@/services';
+import ToastService from 'primevue/toastservice';
+import { useToast } from "primevue/usetoast";
 
 const props = defineProps({
   post: {
@@ -134,7 +138,23 @@ function gotoPost() {
   window.scrollTo(0,0);
 }
 
+const toast = useToast();
+function share() {
+  // try to share using mobile
+  try {
+    navigator.share({
+      title: 'Progresspic',
+      text: `Check out this ${post.weightChange} lb weight loss photo!`,
+      url: 'https://progresspicsearch.com/post/' + post.id
+    });
+    return;
+  }
+  catch (e) {}
 
+  // add to clipboard
+  navigator.clipboard.writeText('https://progresspicsearch.com/post/' + post.id);
+  toast.add({severity:'success', summary: 'Url Copied To Clipboard', detail:'https://progresspicsearch.com/post/' + post.id, life: 3000});
+}
 
 // for switiching searchbar
 const SM_WIDTH = 576;
