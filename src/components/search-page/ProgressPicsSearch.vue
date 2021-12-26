@@ -89,7 +89,6 @@ const search = (searchParamsIn: Partial<SearchParams>) => {
     .getPosts({ ...searchParamsIn, limit: postsLimit })
     .then((resp: BeforeAfterPicture[]) => {
       loading.value = false;
-      console.log(JSON.stringify(resp[0]));
       posts.splice(0, posts.length, ...resp);
     });
 };

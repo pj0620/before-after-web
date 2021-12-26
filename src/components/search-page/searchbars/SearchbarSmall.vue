@@ -6,6 +6,7 @@
         <InputNumber
           class="flex align-items-center justify-content-center weight-input"
           v-model="startWeight"
+          v-on:keyup.enter="search" 
           showButtons
           suffix=" lbs"
         />
@@ -15,6 +16,7 @@
         <InputNumber
           class="align-items-center justify-content-center weight-input"
           v-model="endWeight"
+          v-on:keyup.enter="search" 
           showButtons
           suffix=" lbs"
         />

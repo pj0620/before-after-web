@@ -5,9 +5,9 @@
                 <div class="flex flex-row align-items-center justify-content-center
                   pt-2 pl-2 pb-2">
                     <h3 class="entry-label-weight">Start Weight</h3>
-                    <InputNumber v-model="startWeight" class="mr-4" showButtons suffix=" lbs"/>
+                    <InputNumber v-model="startWeight" v-on:keyup.enter="search" class="mr-4" showButtons suffix=" lbs"/>
                     <h3 class="entry-label-weight">End Weight</h3>
-                    <InputNumber v-model="endWeight" showButtons suffix=" lbs"/>
+                    <InputNumber v-model="endWeight" v-on:keyup.enter="search" showButtons suffix=" lbs"/>
                     <Button label="Find Photos" class="ml-3 border-white border-3 border-round text-lg font-bold" @click="search"/>
                 </div>
             </div>

@@ -6,11 +6,11 @@
                   pt-2 pl-2 pb-2">
                     <div class="flex flex-row align-content-center">
                       <h3 class="flex align-items-center justify-content-center entry-label-weight">Start Weight</h3>
-                      <InputNumber class="flex align-items-center justify-content-center weight-input" v-model="startWeight" showButtons suffix=" lbs"/>
+                      <InputNumber class="flex align-items-center justify-content-center weight-input" v-model="startWeight" v-on:keyup.enter="search"  showButtons suffix=" lbs"/>
                     </div>
                     <div class="flex flex-row align-content-center">
                       <h3 class="align-items-center justify-content-center entry-label-weight">End Weight</h3>
-                      <InputNumber class="align-items-center justify-content-center weight-input" v-model="endWeight" showButtons suffix=" lbs"/>
+                      <InputNumber class="align-items-center justify-content-center weight-input" v-model="endWeight" v-on:keyup.enter="search" showButtons suffix=" lbs"/>
                     </div>
                     <Button label="Find Photos" class="flex ml-3 border-white border-3 border-round text-lg font-bold" @click="search"/>
                 </div>
