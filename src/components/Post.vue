@@ -66,7 +66,7 @@
 <script setup lang="ts">
 import Tag from 'primevue/tag';
 import {
-  PropType, ref, defineProps, computed, onMounted, onUnmounted, Ref, reactive, watch,
+  PropType, ref, defineProps, computed, onMounted, onUnmounted, Ref, reactive, watch, inject,
 } from 'vue';
 import { BeforeAfterPicture } from '@/models';
 import { Constants } from '@/constants';
@@ -101,6 +101,11 @@ const props = defineProps({
 const post = reactive(props.post);
 const alwaysFullSize: Ref<Boolean> = ref<Boolean>(props.alwaysFullSize);
 
+const setLastClickedPost:any = inject('setLastClickedPost');
+if (!setLastClickedPost) {
+  throw Error("cannot find injected setLastClickedPost");
+}
+
 const { cookies } = useCookies();
 let cookieKey = "post/" + post.id;
 const liked = ref(cookies.get(cookieKey) === 'true');
@@ -132,6 +137,7 @@ function gotoPost() {
   if (!props.clickable) {
     return;
   }
+  setLastClickedPost(post.id);
   router.push({
     path: '/post/' + post.id
   });

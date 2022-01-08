@@ -4,7 +4,7 @@
       <img @click="gotoHome()" alt="logo" src="/images/logo-light-whitebg-vertical.png" height="80" class="p-mr-2">
     </template>
   </Menubar>
-  <div id="content">
+  <div id="content w-full">
     <router-view/>
   </div>
 </template>
@@ -22,7 +22,11 @@
     /* background-color: var(--color-primary); */
     background-color: white;
     padding: 0.5rem 0 0.3rem 1rem;
-    margin: 0 1rem 0.5rem 1rem;
+    margin: ;
+  }
+
+  #menu .p-menubar {
+    width: 100%;
   }
 
   .p-menuitem-text {
@@ -46,10 +50,25 @@
 
 <script setup lang="ts">
   import Menubar from 'primevue/menubar';
-  import { ref, watch } from 'vue';
+  import { computed, ref, watch } from 'vue';
   import { useRouter } from 'vue-router';
+  import { provide } from 'vue';
+import { SearchParams } from './models';
 
   const router = useRouter();
+
+  const pageOffset = ref<number>(0);
+  const lastSearchParams = ref<Partial<SearchParams>>({});
+  const lastClickedPost = ref<number>(-1);
+
+  // store users last search for going back to search page
+  provide('pageOffset', pageOffset);
+  provide('lastSearchParams', lastSearchParams);
+  provide('lastClickedPost', lastClickedPost);
+
+  provide('setPageOffset', (offset:number) => pageOffset.value = offset);
+  provide('setLastSearchParams', (searchParams:Partial<SearchParams>) => lastSearchParams.value = searchParams);
+  provide('setLastClickedPost', (lastId:number) => lastClickedPost.value = lastId);
 
   // Refs
   const menuRef = ref(null);

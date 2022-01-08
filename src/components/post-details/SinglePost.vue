@@ -1,13 +1,14 @@
 <template>
     <div v-if="post.imageUrl" class="mb-3 pt-2 mx-3">
-        <div class=" border-round shadow-2 w-full mb-3 bg-primary px-2">
-          <Post 
-            :post="post"
-            :alwaysFullSize="true"
-            :likeEnabled="true"
-            :clickable="false"
-            id="mainPost"
-            />
+        <div class="flex flex-row align-items-center justify-content-center">
+          <div class="flex align-items-center justify-content-center border-round shadow-2 mb-3 bg-primary px-2 pb-2 " id="mainPost">
+            <Post 
+              :post="post"
+              :alwaysFullSize="true"
+              :likeEnabled="true"
+              :clickable="false"
+              />
+          </div>
         </div>
 
         <h3 id="comments-title" class="ml-3 mt-0 mb-0">Comments</h3>
@@ -227,10 +228,10 @@ function getDateDesc(date:string): string {
 }
 
 ::v-deep #mainPost .subheading-text{
-    font-size: 1.1rem;
+    font-size: 1.5rem;
 }
 
-    .post-button {
+.post-button {
   float: right;
   margin-right: 1rem;
 }

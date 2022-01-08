@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-3 mt-1 shadow-2">
+  <div class="mt-1 shadow-2 xl:mx-2 lg:mx-2 md:mx-0 sm:mx-0">
     <SearchbarSmall v-if="mobileMode === 'sm'" @search="search"/>
     <SearchbarMedium v-else-if="mobileMode === 'md'" @search="search"/>
     <Searchbar v-else @search="search" /> 
@@ -8,12 +8,12 @@
   <!-- Non-empty -->
   <div id="photos" v-if="!loading && posts.length > 0"
     ref='scrollComponent'>
-    <div class="grid font-bold text-white border-round m-2" >
+    <div class="grid font-bold text-white border-round my-2 xl:mx-2 lg:mx-2 md:mx-2 sm:mx-0" >
       <div class="xl:col-6 lg:col-6 md:col-6 sm:col-12 pb-0 pt-0"
         v-for="post in posts"
         :key="post.id"
       >
-        <div class="post border-round shadow-2 w-full mb-3 bg-primary">
+        <div class="post border-round shadow-2 w-full mb-2 sm:px-1 bg-primary" :id="'post-' + post.id">
           <Post :post="post" />
         </div>
 
@@ -35,7 +35,8 @@
 
 <script setup lang="ts">
 import {
-  onMounted, onUnmounted, reactive, ref
+nextTick,
+  onMounted, onUnmounted, reactive, Ref, ref
 } from 'vue';
 import { BeforeAfterPicture } from '@/models';
 import { BeforeAfterPicsService } from '../../services';
@@ -46,18 +47,41 @@ import Post from '../Post.vue';
 import { SearchParams } from '@/models/search-params.model';
 import InArticleAd from '../InArticleAd.vue';
 import { Constants } from '@/constants';
+import { inject } from 'vue';
 
-let postsOffset = 0;
 const postsLimit = Constants.POSTS_LIMIT;
+const postsOffset:Ref<number> = inject('pageOffset') || ref(postsLimit);
+const searchParams:Ref<Partial<SearchParams>> = inject('lastSearchParams') || ref({});
+const lastClickedPost:Ref<number> = inject('lastClickedPost') || ref(-1);
+
+const setPageOffset:any = inject('setPageOffset')!;
+const setLastSearchParams:any = inject('setLastSearchParams');
+
+if (postsOffset.value == 0) {
+  postsOffset.value = 1;
+}
+
+if (!setPageOffset) {
+  throw Error("cannot find injected setPageOffset");
+}
+if (!setLastSearchParams) {
+  throw Error("cannot find injected setLastSearchParams");
+}
+const setLastClickedPost:any = inject('setLastClickedPost');
+if (!setLastClickedPost) {
+  throw Error("cannot find injected setLastClickedPost");
+}
 
 const adProb = Constants.AD_PROB;
 
 const posts = reactive<BeforeAfterPicture[]>([]);
 const loading = ref(true);
-BeforeAfterPicsService.getPosts({ limit: postsLimit }).then((resp: BeforeAfterPicture[]) => {
+BeforeAfterPicsService
+  .getPosts({ limit: 2*postsLimit, offset:postsOffset.value-1, ...searchParams.value })
+  .then((resp: BeforeAfterPicture[]) => {
   loading.value = false;
   posts.splice(0, posts.length, ...resp);
-});
+})
 
 // for switiching searchbar
 const SM_WIDTH = 576;
@@ -76,15 +100,11 @@ const updateViewMode = () => {
   }
 }
 updateViewMode();
-onMounted(() => window.addEventListener('resize', updateViewMode))
-onUnmounted(() => window.removeEventListener('resize', updateViewMode))
 
-
-let searchParams:Partial<SearchParams>|null = null;
 const search = (searchParamsIn: Partial<SearchParams>) => {
   const loading = ref(true);
-  postsOffset = 0;
-  searchParams = searchParamsIn;
+  setPageOffset(0);
+  setLastSearchParams(searchParamsIn);
   BeforeAfterPicsService
     .getPosts({ ...searchParamsIn, limit: postsLimit })
     .then((resp: BeforeAfterPicture[]) => {
@@ -99,10 +119,9 @@ function loadMorePosts(): void {
   if (loadingMorePosts.value) {
     return;
   }
-
-  postsOffset += postsLimit;
+  setPageOffset(postsOffset.value + postsLimit);
   BeforeAfterPicsService
-    .getPosts({ ...searchParams, limit: postsLimit, offset: postsOffset })
+    .getPosts({ ...searchParams.value, limit: postsLimit, offset: postsOffset.value })
     .then((resp: BeforeAfterPicture[]) => {
       loading.value = false;
       loadingMorePosts.value = false;
@@ -122,11 +141,55 @@ const handleScroll = (_: any) => {
     loadMorePosts();
   }
 };
+
+// tries to scroll to last selected view, return false if not yet on page
+// let triesAttempted = 0;
+function attemptToScrollTo(numTries: number) {
+  let triesAttempted = 0;
+  async function attempScroll() {
+    //sleep
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    //try to scroll to document
+    const post = document.getElementById('post-' + lastClickedPost.value);
+    if (post) {
+      post.scrollIntoView();
+      setLastClickedPost(-1);
+      return;
+    }
+    else {
+      triesAttempted += 1;
+    }
+
+    // retry if attempts < numTries
+    if (triesAttempted < numTries) {
+      attempScroll();
+    }
+    else {
+      triesAttempted = 0;
+      setLastClickedPost(-1);
+      return;
+    }
+  }
+  attempScroll();
+}
+
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
+  nextTick()
+  .then(() => {
+    if (lastClickedPost.value != -1) {
+      attemptToScrollTo(3);
+    }
+  })
+  .then(()=>
+    window.addEventListener('scroll', handleScroll)
+  );
+
+  window.addEventListener('resize', updateViewMode);
 });
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener('resize', updateViewMode);
 });
 </script>
 
