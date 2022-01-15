@@ -18,7 +18,6 @@
             </div>
         </div>
     </div>
-    <button @click="debug">DEBUG</button>
 </template>
 
 <script lang="ts" setup>
@@ -33,10 +32,6 @@ const adProb = Constants.AD_PROB;
 const { posts } = defineProps({
     posts: Array as PropType<BeforeAfterPicture[]>
 });
-
-function debug() {
-    console.log(posts);
-}
 </script>
 
 <style scoped>
