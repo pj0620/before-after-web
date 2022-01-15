@@ -1,7 +1,7 @@
 <template>
   <Menubar ref="menuRef" :model="items" id="menu" >
     <template #start>
-      <img @click="gotoHome()" alt="logo" src="/images/logo-light-whitebg-vertical.png" height="80" class="p-mr-2">
+      <img @click="gotoHome()" alt="logo" src="/images/logo.png" height="80" class="p-mr-2">
     </template>
   </Menubar>
   <div id="content w-full">

@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-blue-50 mt-5 w-9 contact-info border-round shadow-2">
+    <div class="card mt-5 w-9 contact-info border-round shadow-2">
         <div class="flex flex-column card-container green-container">
             <div class="flex flex-wrap card-container">
                 <p class="contact-info-title">Contact Info:</p>
@@ -20,17 +20,20 @@
         padding-left: 0.5rem;
         margin-top: 0.5rem;
         margin-bottom: 0;
+        color:white;
     }
 
     .contact-info-entry {
         padding-left: 3rem;
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
+        color: white;
     }
 
     .contact-info {
         margin: auto;
         width: 50%;
         padding-bottom: 4rem;
+        background: var(--color-primary);
     }
 </style>

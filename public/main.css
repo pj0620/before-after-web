@@ -1,6 +1,7 @@
 :root {
     --bg-color: #F5F5F5;
-    --color-primary: var(--blue-500);
+    /* --color-primary: var(--blue-500); */
+    --color-primary: #242582;
     --color-secondary: var(--blue-500);
 }
 
@@ -10,4 +11,13 @@
 
 .bg-secondary {
     background-color: var(--color-secondary) !important;
+}
+
+.p-button {
+    background: var(--color-primary) !important;
+    border: 1px solid #F5F5F5 !important;
+}
+
+.p-treenode-content.p-highlight {
+    background: #2F2FA2 !important;
 }

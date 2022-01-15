@@ -295,7 +295,7 @@ body {
 }
 
 .comment-section {
-  background-color: var(--color-secondary);
+  background-color: var(--color-primary);
 }
 
 #comments-title {
