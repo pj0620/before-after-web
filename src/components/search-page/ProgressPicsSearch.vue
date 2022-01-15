@@ -13,7 +13,7 @@
         v-for="post in posts"
         :key="post.id"
       >
-        <div class="post border-round shadow-2 w-full mb-2 sm:px-1 bg-primary" :id="'post-' + post.id">
+        <div class="post border-round shadow-2 w-full mb-2 bg-primary" :id="'post-' + post.id">
           <Post :post="post" />
         </div>
 

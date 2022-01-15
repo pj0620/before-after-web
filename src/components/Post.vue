@@ -7,7 +7,7 @@
               {{buildTitle(post)}}
           </div>
       </div>
-      <div class="flex flex-row flex-wrap justify-content-between mb-1">
+      <div class="flex flex-row flex-wrap justify-content-between mb-1 mx-2">
           <div class="flex flew-row text-white subheading-text">
               <!-- <i class="flex align-items-center pi pi-thumbs-up mr-1 pb-1 post-subtext" @click="toggleLike"></i> -->
               <svg v-if="liked" @click="dislikePost" class="like-button" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -29,7 +29,7 @@
               </a>
           </div>
       </div>
-      <div class="flex flex-row flex-wrap justify-content-between">
+      <div class="flex flex-row flex-wrap justify-content-between mx-2">
           <div class="flex text-white subheading-text">
               {{post.gender? post.gender=="M" ? "Male," : "Female," : "" }}
               {{post.age}}
@@ -38,7 +38,7 @@
               {{getDateDesc(post.createdAt)}}
           </div>
       </div>
-      <div v-if="Constants.INCLUDE_SOURCE" class="flex flex-row flex-wrap justify-content-between">
+      <div v-if="Constants.INCLUDE_SOURCE" class="flex flex-row flex-wrap justify-content-between mx-2">
           <a :href="post.originalPost" class="source-text" target="_blank">
               source
           </a>
