@@ -2,7 +2,7 @@
   <div class="mt-1 shadow-2 xl:mx-2 lg:mx-2 md:mx-0 sm:mx-0">
     <SearchbarSmall v-if="mobileMode === 'sm'" @search="search"/>
     <SearchbarMedium v-else-if="mobileMode === 'md'" @search="search"/>
-    <Searchbar v-else @search="search" /> 
+    <Searchbar v-else @search="search" />
   </div>
 
   <!-- Non-empty -->
@@ -35,9 +35,9 @@
 
 <script setup lang="ts">
 import {
-nextTick,
-  onMounted, onUnmounted, reactive, Ref, ref
-} from 'vue';
+  nextTick,
+  onMounted, onUnmounted, reactive, Ref, ref,
+  inject } from 'vue';
 import { BeforeAfterPicture } from '@/models';
 import { BeforeAfterPicsService } from '../../services';
 import Searchbar from './searchbars/Searchbar.vue';
@@ -47,8 +47,7 @@ import Post from '../Post.vue';
 import { SearchParams } from '@/models/search-params.model';
 import InArticleAd from '../InArticleAd.vue';
 import { Constants } from '@/constants';
-import { inject } from 'vue';
-import { useGtag } from "vue-gtag-next";
+import { useGtag } from 'vue-gtag-next';
 
 const postsLimit = Constants.POSTS_LIMIT;
 const postsOffset:Ref<number> = inject('pageOffset') || ref(postsLimit);
@@ -63,14 +62,14 @@ if (postsOffset.value == 0) {
 }
 
 if (!setPageOffset) {
-  throw Error("cannot find injected setPageOffset");
+  throw Error('cannot find injected setPageOffset');
 }
 if (!setLastSearchParams) {
-  throw Error("cannot find injected setLastSearchParams");
+  throw Error('cannot find injected setLastSearchParams');
 }
 const setLastClickedPost:any = inject('setLastClickedPost');
 if (!setLastClickedPost) {
-  throw Error("cannot find injected setLastClickedPost");
+  throw Error('cannot find injected setLastClickedPost');
 }
 
 const adProb = Constants.AD_PROB;
@@ -78,11 +77,11 @@ const adProb = Constants.AD_PROB;
 const posts = reactive<BeforeAfterPicture[]>([]);
 const loading = ref(true);
 BeforeAfterPicsService
-  .getPosts({ limit: 2*postsLimit, offset:postsOffset.value-1, ...searchParams.value })
+  .getPosts({ limit: 2 * postsLimit, offset: postsOffset.value - 1, ...searchParams.value })
   .then((resp: BeforeAfterPicture[]) => {
-  loading.value = false;
-  posts.splice(0, posts.length, ...resp);
-})
+    loading.value = false;
+    posts.splice(0, posts.length, ...resp);
+  });
 
 // for switiching searchbar
 const SM_WIDTH = 576;
@@ -92,14 +91,12 @@ const updateViewMode = () => {
   const width = document.documentElement.clientWidth;
   if (width < SM_WIDTH) {
     mobileMode.value = 'sm';
-  }
-  else if (width <= MD_WIDTH) {
+  } else if (width <= MD_WIDTH) {
     mobileMode.value = 'md';
-  }
-  else {
+  } else {
     mobileMode.value = 'lg';
   }
-}
+};
 updateViewMode();
 const { event } = useGtag();
 const search = (searchParamsIn: Partial<SearchParams>) => {
@@ -159,9 +156,9 @@ function attemptToScrollTo(numTries: number) {
       setLastClickedPost(-1);
       return;
     }
-    else {
+    
       triesAttempted += 1;
-    }
+    
 
     // retry if attempts < numTries
     if (triesAttempted < numTries) {
@@ -178,14 +175,13 @@ function attemptToScrollTo(numTries: number) {
 
 onMounted(() => {
   nextTick()
-  .then(() => {
-    if (lastClickedPost.value != -1) {
-      attemptToScrollTo(3);
-    }
-  })
-  .then(()=>
-    window.addEventListener('scroll', handleScroll)
-  );
+    .then(() => {
+      if (lastClickedPost.value != -1) {
+        attemptToScrollTo(3);
+      }
+    })
+    .then(() => window.addEventListener('scroll', handleScroll),
+    );
 
   window.addEventListener('resize', updateViewMode);
 });

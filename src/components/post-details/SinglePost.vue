@@ -2,7 +2,7 @@
     <div v-if="post.imageUrl" class="mb-3 pt-2 mx-3">
         <div class="flex flex-row align-items-center justify-content-center">
           <div class="flex align-items-center justify-content-center border-round shadow-2 mb-3 bg-primary px-2 pb-2 " id="mainPost">
-            <Post 
+            <Post
               :post="post"
               :alwaysFullSize="true"
               :likeEnabled="true"
@@ -50,17 +50,19 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { BeforeAfterPicsService } from '@/services';
-import { reactive, Ref, ref, watch } from 'vue';
-import RelatedPosts from './RelatedPosts.vue';
+import {
+  reactive, Ref, ref, watch,
+} from 'vue';
 import ProgressSpinner from 'primevue/progressspinner';
-import { BeforeAfterPicture, CommentI } from '@/models';
 import _ from 'lodash';
-import Post from '../Post.vue';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
+import { useGtag } from 'vue-gtag-next';
 import { Constants } from '@/constants';
-import { useGtag } from "vue-gtag-next";
+import Post from '../Post.vue';
+import { BeforeAfterPicture, CommentI } from '@/models';
+import RelatedPosts from './RelatedPosts.vue';
+import { BeforeAfterPicsService } from '@/services';
 
 const route = useRoute();
 const router = useRouter();
@@ -68,54 +70,50 @@ const router = useRouter();
 const { event } = useGtag();
 
 const props = defineProps({
-    id: Number
+  id: Number,
 });
 
 const post: BeforeAfterPicture|{} = reactive<BeforeAfterPicture|{}>({});
 const relatedPosts: Ref<BeforeAfterPicture[]> = ref<BeforeAfterPicture[]>([]);
 const comments:Ref<CommentI[]> = ref([]);
 async function init() {
-    const postId = props.id;
-    // get post id from query params
-    if (!postId) {
-        console.error('no id passed');
-        router.push({
-            path: '/'
-        });
-        return;
-    }
+  const postId = props.id;
+  // get post id from query params
+  if (!postId) {
+    console.error('no id passed');
+    router.push({
+      path: '/',
+    });
+    return;
+  }
 
-    // get post
-    try {
-        const respPost = await BeforeAfterPicsService.getPostById(postId);
-        Object.assign(post, respPost);
-    } 
-    catch (e) {
-        console.error('error while getting post');
-        return;
-    }
+  // get post
+  try {
+    const respPost = await BeforeAfterPicsService.getPostById(postId);
+    Object.assign(post, respPost);
+  } catch (e) {
+    console.error('error while getting post');
+    return;
+  }
 
-    // related posts
-    try {
-        const respRelated = await BeforeAfterPicsService
-            .getPosts(_.pick(post,'startWeight', 'endWeight','gender'));
-        const related = respRelated.filter(relatedPost => relatedPost.id !== post.id);
-        relatedPosts.value.splice(0,relatedPosts.value.length,...related);
-    }
-    catch {
-        console.error('error while getting post');
-        return;
-    }
+  // related posts
+  try {
+    const respRelated = await BeforeAfterPicsService
+      .getPosts(_.pick(post, 'startWeight', 'endWeight', 'gender'));
+    const related = respRelated.filter((relatedPost) => relatedPost.id !== post.id);
+    relatedPosts.value.splice(0, relatedPosts.value.length, ...related);
+  } catch {
+    console.error('error while getting post');
+    return;
+  }
 
-    // comments
-    try {
-        const respComments = await BeforeAfterPicsService.getComments(post.id);
-        comments.value.splice(0,comments.value.length, ...respComments);
-    }
-    catch {
-        console.error('error while getting post');
-        return;
-    }
+  // comments
+  try {
+    const respComments = await BeforeAfterPicsService.getComments(post.id);
+    comments.value.splice(0, comments.value.length, ...respComments);
+  } catch {
+    console.error('error while getting post');
+  }
 }
 init();
 watch(() => props.id, init);
@@ -126,19 +124,19 @@ const errorMsg = ref('');
 function postComment() {
   event('post-comment');
   if (newComment.value.length == 0) {
-    errorMsg.value = "Error: Empty Comment"
+    errorMsg.value = 'Error: Empty Comment';
     return;
   }
-  else if (!isASCII(newComment.value)) {
-    errorMsg.value = "Error: Comment contains invalid characters"
+  if (!isASCII(newComment.value)) {
+    errorMsg.value = 'Error: Comment contains invalid characters';
     return;
   }
-  else if (newComment.value.length > Constants.MAX_COMMENT_LENGTH) {
-    errorMsg.value = "Error: Max comment length is 250 characters"
+  if (newComment.value.length > Constants.MAX_COMMENT_LENGTH) {
+    errorMsg.value = 'Error: Max comment length is 250 characters';
     return;
   }
   if (_.isEmpty(post)) {
-      return;
+    return;
   }
   errorMsg.value = '';
   BeforeAfterPicsService
@@ -152,8 +150,8 @@ function postComment() {
 }
 
 function isASCII(str:string) {
-    const extended = true;
-    return (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(str);
+  const extended = true;
+  return (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(str);
 }
 
 // eslint-disable-next-line no-shadow

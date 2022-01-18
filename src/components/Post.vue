@@ -1,5 +1,5 @@
 <template>
-    <Toast /> 
+    <Toast />
 
     <a @click="gotoPost">
       <div class="flex flex-row flex-wrap justify-content-between mb-1">
@@ -68,14 +68,14 @@ import Tag from 'primevue/tag';
 import {
   PropType, ref, defineProps, computed, onMounted, onUnmounted, Ref, reactive, watch, inject,
 } from 'vue';
-import { BeforeAfterPicture } from '@/models';
-import { Constants } from '@/constants';
 import { useRouter } from 'vue-router';
-import { useCookies } from "vue3-cookies";
-import { BeforeAfterPicsService } from '@/services';
+import { useCookies } from 'vue3-cookies';
 import ToastService from 'primevue/toastservice';
-import { useToast } from "primevue/usetoast";
-import { useGtag } from "vue-gtag-next";
+import { useToast } from 'primevue/usetoast';
+import { useGtag } from 'vue-gtag-next';
+import { BeforeAfterPicsService } from '@/services';
+import { Constants } from '@/constants';
+import { BeforeAfterPicture } from '@/models';
 
 const props = defineProps({
   post: {
@@ -84,35 +84,35 @@ const props = defineProps({
   },
   alwaysFullSize: {
     type: Boolean,
-    required: false
+    required: false,
   },
   threeSplitEnabled: {
     type: Boolean,
-    required: false
+    required: false,
   },
   likeEnabled: {
     type: Boolean,
-    required: false
+    required: false,
   },
   clickable: {
     type: Boolean,
-    default:true
+    default: true,
   },
 });
 const post = reactive(props.post);
-const alwaysFullSize: Ref<Boolean> = ref<Boolean>(props.alwaysFullSize);
+const alwaysFullSize: Ref<boolean> = ref<boolean>(props.alwaysFullSize);
 
 const setLastClickedPost:any = inject('setLastClickedPost');
 if (!setLastClickedPost) {
-  throw Error("cannot find injected setLastClickedPost");
+  throw Error('cannot find injected setLastClickedPost');
 }
 
 const { event } = useGtag();
 const { cookies } = useCookies();
-let cookieKey = "post/" + post.id;
+let cookieKey = `post/${post.id}`;
 const liked = ref(cookies.get(cookieKey) === 'true');
-watch(post, (oldV,newV) => {
-  cookieKey = "post/" + post.id;
+watch(post, (oldV, newV) => {
+  cookieKey = `post/${post.id}`;
   liked.value = cookies.get(cookieKey) === 'true';
 });
 async function likePost() {
@@ -144,27 +144,28 @@ function gotoPost() {
   event('post-clicked');
   setLastClickedPost(post.id);
   router.push({
-    path: '/post/' + post.id
+    path: `/post/${post.id}`,
   });
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 const toast = useToast();
 function share() {
-  event('share')
+  event('share');
   // try to share using mobile
   try {
     navigator.share({
       title: 'Progresspic',
       text: `Check out this ${post.weightChange} lb weight loss photo!`,
-      url: 'https://progresspicsearch.com/post/' + post.id
+      url: `https://progresspicsearch.com/post/${post.id}`,
     });
     return;
-  }
-  catch (e) {}
+  } catch (e) {}
 
   // add to clipboard
-  navigator.clipboard.writeText('https://progresspicsearch.com/post/' + post.id);
-  toast.add({severity:'success', summary: 'Url Copied To Clipboard', detail:'https://progresspicsearch.com/post/' + post.id, life: 3000});
+  navigator.clipboard.writeText(`https://progresspicsearch.com/post/${post.id}`);
+  toast.add({
+    severity: 'success', summary: 'Url Copied To Clipboard', detail: `https://progresspicsearch.com/post/${post.id}`, life: 3000,
+  });
 }
 
 // for switiching searchbar
@@ -180,22 +181,19 @@ const updateWidth = () => {
   const width = document.documentElement.clientWidth;
   if (width <= SM_WIDTH) {
     finalWidth.value = Math.floor(0.85 * width);
-  }
-  else if (width <= MD_WIDTH) {
+  } else if (width <= MD_WIDTH) {
     finalWidth.value = Math.floor(0.85 * width);
-  }
-  else if (width <= LG_WIDTH) {
+  } else if (width <= LG_WIDTH) {
     finalWidth.value = Math.floor(0.43 * width);
+  } else {
+    finalWidth.value = props.threeSplitEnabled
+      ? Math.floor(0.29 * width)
+      : Math.floor(0.43 * width);
   }
-  else {
-    finalWidth.value = props.threeSplitEnabled ? 
-      Math.floor(0.29 * width) :
-      Math.floor(0.43 * width);
-  }
-}
+};
 updateWidth();
-onMounted(() => window.addEventListener('resize', updateWidth))
-onUnmounted(() => window.removeEventListener('resize', updateWidth))
+onMounted(() => window.addEventListener('resize', updateWidth));
+onUnmounted(() => window.removeEventListener('resize', updateWidth));
 const scaleFactor = computed(() => finalWidth.value / post.imageWidth!);
 const finalHeight = computed(() => Math.floor(scaleFactor.value * post.imageHeight!));
 const iframeCss = computed(() => {
@@ -252,18 +250,17 @@ function getDateDesc(date:number): string {
 }
 
 function niceNumber(likes:number):string {
-    if (likes < 1000) {
-        return likes.toString();
-    }
-    else if (likes < 1000000) {
-        return (Math.floor(likes/100)/10).toString() + "k";
-    }
-    else if (likes < 1000000000) {
-        return (Math.floor(likes/100000)/10).toString() + "M";
-    }
-    else {
-        return (Math.floor(likes/100000000)/10).toString() + "B";
-    }
+  if (likes < 1000) {
+    return likes.toString();
+  }
+  if (likes < 1000000) {
+    return `${(Math.floor(likes / 100) / 10).toString()}k`;
+  }
+  if (likes < 1000000000) {
+    return `${(Math.floor(likes / 100000) / 10).toString()}M`;
+  }
+
+  return `${(Math.floor(likes / 100000000) / 10).toString()}B`;
 }
 </script>
 
@@ -281,12 +278,12 @@ function niceNumber(likes:number):string {
   }
 
   .overall-scalable {
-    overflow: hidden; 
+    overflow: hidden;
     -webkit-transition: all 1s;
   }
 
   .scalable {
-    -webkit-transform-origin: top left; 
+    -webkit-transform-origin: top left;
     -webkit-transition: all 1s;
   }
 
