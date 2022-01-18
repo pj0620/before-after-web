@@ -75,6 +75,7 @@ import { useCookies } from "vue3-cookies";
 import { BeforeAfterPicsService } from '@/services';
 import ToastService from 'primevue/toastservice';
 import { useToast } from "primevue/usetoast";
+import { useGtag } from "vue-gtag-next";
 
 const props = defineProps({
   post: {
@@ -106,6 +107,7 @@ if (!setLastClickedPost) {
   throw Error("cannot find injected setLastClickedPost");
 }
 
+const { event } = useGtag();
 const { cookies } = useCookies();
 let cookieKey = "post/" + post.id;
 const liked = ref(cookies.get(cookieKey) === 'true');
@@ -114,6 +116,7 @@ watch(post, (oldV,newV) => {
   liked.value = cookies.get(cookieKey) === 'true';
 });
 async function likePost() {
+  event('like');
   if (!props.likeEnabled) {
     return;
   }
@@ -123,6 +126,7 @@ async function likePost() {
   post.likes++;
 }
 async function dislikePost() {
+  event('dislike');
   if (!props.likeEnabled) {
     return;
   }
@@ -137,15 +141,16 @@ function gotoPost() {
   if (!props.clickable) {
     return;
   }
+  event('post-clicked');
   setLastClickedPost(post.id);
   router.push({
     path: '/post/' + post.id
   });
   window.scrollTo(0,0);
 }
-
 const toast = useToast();
 function share() {
+  event('share')
   // try to share using mobile
   try {
     navigator.share({

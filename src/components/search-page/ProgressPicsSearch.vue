@@ -48,6 +48,7 @@ import { SearchParams } from '@/models/search-params.model';
 import InArticleAd from '../InArticleAd.vue';
 import { Constants } from '@/constants';
 import { inject } from 'vue';
+import { useGtag } from "vue-gtag-next";
 
 const postsLimit = Constants.POSTS_LIMIT;
 const postsOffset:Ref<number> = inject('pageOffset') || ref(postsLimit);
@@ -100,8 +101,9 @@ const updateViewMode = () => {
   }
 }
 updateViewMode();
-
+const { event } = useGtag();
 const search = (searchParamsIn: Partial<SearchParams>) => {
+  event('search');
   const loading = ref(true);
   setPageOffset(0);
   setLastSearchParams(searchParamsIn);

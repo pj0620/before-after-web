@@ -60,9 +60,12 @@ import Post from '../Post.vue';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import { Constants } from '@/constants';
+import { useGtag } from "vue-gtag-next";
 
 const route = useRoute();
 const router = useRouter();
+
+const { event } = useGtag();
 
 const props = defineProps({
     id: Number
@@ -121,6 +124,7 @@ const newComment = ref('');
 const errorMsg = ref('');
 
 function postComment() {
+  event('post-comment');
   if (newComment.value.length == 0) {
     errorMsg.value = "Error: Empty Comment"
     return;
