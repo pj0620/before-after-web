@@ -1,7 +1,7 @@
 <template>
   <div class="mt-1 shadow-2 xl:mx-2 lg:mx-2 md:mx-0 sm:mx-0">
     <SearchbarSmall v-if="mobileMode === 'sm'" @search="search"/>
-    <SearchbarMedium v-else-if="mobileMode === 'md'" @search="search"/>
+    <SearchbarSmall v-else-if="mobileMode === 'md'" @search="search"/>
     <Searchbar v-else @search="search" />
   </div>
 
@@ -37,7 +37,9 @@
 import {
   nextTick,
   onMounted, onUnmounted, reactive, Ref, ref,
-  inject } from 'vue';
+  inject,
+} from 'vue';
+import { useGtag } from 'vue-gtag-next';
 import { BeforeAfterPicture } from '@/models';
 import { BeforeAfterPicsService } from '../../services';
 import Searchbar from './searchbars/Searchbar.vue';
@@ -46,8 +48,7 @@ import SearchbarSmall from './searchbars/SearchbarSmall.vue';
 import Post from '../Post.vue';
 import { SearchParams } from '@/models/search-params.model';
 import InArticleAd from '../InArticleAd.vue';
-import { Constants } from '@/constants';
-import { useGtag } from 'vue-gtag-next';
+import { Constants, Environment } from '@/constants';
 
 const postsLimit = Constants.POSTS_LIMIT;
 const postsOffset:Ref<number> = inject('pageOffset') || ref(postsLimit);
@@ -100,7 +101,9 @@ const updateViewMode = () => {
 updateViewMode();
 const { event } = useGtag();
 const search = (searchParamsIn: Partial<SearchParams>) => {
-  event('search');
+  if (Constants.ENV === Environment.PROD) {
+    event('search');
+  }
   const loading = ref(true);
   setPageOffset(0);
   setLastSearchParams(searchParamsIn);
@@ -117,6 +120,9 @@ const loadingMorePosts = ref(false);
 function loadMorePosts(): void {
   if (loadingMorePosts.value) {
     return;
+  }
+  if (Constants.ENV === Environment.PROD) {
+    event('load-more-posts-main');
   }
   setPageOffset(postsOffset.value + postsLimit);
   BeforeAfterPicsService
@@ -146,28 +152,25 @@ const handleScroll = (_: any) => {
 function attemptToScrollTo(numTries: number) {
   let triesAttempted = 0;
   async function attempScroll() {
-    //sleep
+    // sleep
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    //try to scroll to document
-    const post = document.getElementById('post-' + lastClickedPost.value);
+    // try to scroll to document
+    const post = document.getElementById(`post-${lastClickedPost.value}`);
     if (post) {
       post.scrollIntoView();
       setLastClickedPost(-1);
       return;
     }
-    
-      triesAttempted += 1;
-    
+
+    triesAttempted += 1;
 
     // retry if attempts < numTries
     if (triesAttempted < numTries) {
       attempScroll();
-    }
-    else {
+    } else {
       triesAttempted = 0;
       setLastClickedPost(-1);
-      return;
     }
   }
   attempScroll();
@@ -180,8 +183,7 @@ onMounted(() => {
         attemptToScrollTo(3);
       }
     })
-    .then(() => window.addEventListener('scroll', handleScroll),
-    );
+    .then(() => window.addEventListener('scroll', handleScroll));
 
   window.addEventListener('resize', updateViewMode);
 });

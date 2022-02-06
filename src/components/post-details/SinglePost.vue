@@ -5,7 +5,6 @@
             <Post
               :post="post"
               :alwaysFullSize="true"
-              :likeEnabled="true"
               :clickable="false"
               />
           </div>

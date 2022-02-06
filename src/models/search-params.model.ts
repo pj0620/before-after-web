@@ -9,6 +9,7 @@ export interface SearchParams {
     age?: number,
     age_range?: number,
     gender?: string,
+    height?: number,
     limit?: number,
     offset?: number
 }

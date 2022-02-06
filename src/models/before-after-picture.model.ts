@@ -1,6 +1,7 @@
 export interface BeforeAfterPicture {
   id: number;
   gender?: string;
+  height?: number;
   age: number;
   startWeight: number;
   endWeight: number;

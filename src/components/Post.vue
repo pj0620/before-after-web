@@ -10,12 +10,12 @@
       <div class="flex flex-row flex-wrap justify-content-between mb-1 mx-2">
           <div class="flex flew-row text-white subheading-text">
               <!-- <i class="flex align-items-center pi pi-thumbs-up mr-1 pb-1 post-subtext" @click="toggleLike"></i> -->
-              <svg v-if="liked" @click="dislikePost" class="like-button" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg v-if="liked" @click.stop="dislikePost" class="like-button" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <g fill="none" stroke="#fffffe">
                 <path d="m17.25 20.75h-11.62c-1.3067 4.6e-5 -2.369-1.0534-2.38-2.36v-5.64c0.00551-1.3105 1.0695-2.37 2.38-2.37h2l2.73-6.09c0.38776-0.86557 1.3945-1.2647 2.27-0.9 1.1499 0.50943 1.8883 1.6523 1.88 2.91v2.47h4c0.05627-0.00951 0.11373-0.00951 0.17 0 0.63392 0.12219 1.1983 0.47937 1.58 1 0.36058 0.48098 0.51851 1.084 0.44 1.68l-1.1 7.29c-0.18208 1.1569-1.1788 2.0095-2.35 2.01z" fill="#fff" stroke="none"/>
                 </g>
               </svg>
-              <svg v-else @click="likePost" xmlns="http://www.w3.org/2000/svg" class="like-button" viewBox="0 0 24 24"><g id="thumbs-up"><path fill="#FFFFFF" d="M17.25,20.75H5.63a2.38,2.38,0,0,1-2.38-2.36V12.75a2.38,2.38,0,0,1,2.38-2.37h2l2.73-6.09a1.75,1.75,0,0,1,2.27-.9A3.16,3.16,0,0,1,14.51,6.3V8.77h4a.51.51,0,0,1,.17,0,2.56,2.56,0,0,1,1.58,1,2.3,2.3,0,0,1,.44,1.68L19.6,18.74A2.38,2.38,0,0,1,17.25,20.75Zm-8.43-1.5h8.43a.87.87,0,0,0,.87-.73l1.12-7.26a.72.72,0,0,0-.16-.56,1.12,1.12,0,0,0-.66-.42H13.75A.74.74,0,0,1,13,9.52V6.3a1.66,1.66,0,0,0-1-1.53.24.24,0,0,0-.31.13L8.82,11.29ZM5.63,11.88a.87.87,0,0,0-.88.87v5.64a.87.87,0,0,0,.88.86H7.32V11.88Z"/></g></svg>
+              <svg v-else @click.stop="likePost" xmlns="http://www.w3.org/2000/svg" class="like-button" viewBox="0 0 24 24"><g id="thumbs-up"><path fill="#FFFFFF" d="M17.25,20.75H5.63a2.38,2.38,0,0,1-2.38-2.36V12.75a2.38,2.38,0,0,1,2.38-2.37h2l2.73-6.09a1.75,1.75,0,0,1,2.27-.9A3.16,3.16,0,0,1,14.51,6.3V8.77h4a.51.51,0,0,1,.17,0,2.56,2.56,0,0,1,1.58,1,2.3,2.3,0,0,1,.44,1.68L19.6,18.74A2.38,2.38,0,0,1,17.25,20.75Zm-8.43-1.5h8.43a.87.87,0,0,0,.87-.73l1.12-7.26a.72.72,0,0,0-.16-.56,1.12,1.12,0,0,0-.66-.42H13.75A.74.74,0,0,1,13,9.52V6.3a1.66,1.66,0,0,0-1-1.53.24.24,0,0,0-.31.13L8.82,11.29ZM5.63,11.88a.87.87,0,0,0-.88.87v5.64a.87.87,0,0,0,.88.86H7.32V11.88Z"/></g></svg>
               <p class="flex align-items-center my-0 mr-2 post-subtext">{{niceNumber(post.likes)}}</p>
               <i class="flex align-items-center pi pi-comment post-subtext comment-icon"></i>
               <p class="flex align-items-center my-0 post-subtext">{{niceNumber(post.comments)}}</p>
@@ -24,7 +24,7 @@
 
           <div class="flex flex-row text-white subheading-text">
               <i class="flex align-items-center pi pi-share-alt mr-2 share-icon"></i>
-              <a class="flex align-items-center text-white post-subtext share-text underline" @click="share">
+              <a class="flex align-items-center text-white post-subtext share-text underline" @click.stop="share">
                 Share
               </a>
           </div>
@@ -32,7 +32,7 @@
       <div class="flex flex-row flex-wrap justify-content-between mx-2">
           <div class="flex text-white subheading-text">
               {{post.gender? post.gender=="M" ? "Male," : "Female," : "" }}
-              {{post.age}}
+              {{post.age}}{{post.height ? ',' + formatHeight(post.height) : ''}}
           </div>
           <div class="flex text-white subheading-text">
               {{getDateDesc(post.createdAt)}}
@@ -74,7 +74,7 @@ import ToastService from 'primevue/toastservice';
 import { useToast } from 'primevue/usetoast';
 import { useGtag } from 'vue-gtag-next';
 import { BeforeAfterPicsService } from '@/services';
-import { Constants } from '@/constants';
+import { Constants, Environment } from '@/constants';
 import { BeforeAfterPicture } from '@/models';
 
 const props = defineProps({
@@ -90,7 +90,7 @@ const props = defineProps({
     type: Boolean,
     required: false,
   },
-  likeEnabled: {
+  likeDisabled: {
     type: Boolean,
     required: false,
   },
@@ -101,6 +101,9 @@ const props = defineProps({
 });
 const post = reactive(props.post);
 const alwaysFullSize: Ref<boolean> = ref<boolean>(props.alwaysFullSize);
+
+const useLbs:Ref<boolean> = inject('useLbs') || ref(true);
+const useFt:Ref<boolean> = inject('useFt') || ref(true);
 
 const setLastClickedPost:any = inject('setLastClickedPost');
 if (!setLastClickedPost) {
@@ -116,8 +119,10 @@ watch(post, (oldV, newV) => {
   liked.value = cookies.get(cookieKey) === 'true';
 });
 async function likePost() {
-  event('like');
-  if (!props.likeEnabled) {
+  if (Constants.ENV === Environment.PROD) {
+    event('like');
+  }
+  if (props.likeDisabled) {
     return;
   }
   await BeforeAfterPicsService.likePost(post.id);
@@ -127,7 +132,7 @@ async function likePost() {
 }
 async function dislikePost() {
   event('dislike');
-  if (!props.likeEnabled) {
+  if (props.likeDisabled) {
     return;
   }
   await BeforeAfterPicsService.dislikePost(post.id);
@@ -141,7 +146,9 @@ function gotoPost() {
   if (!props.clickable) {
     return;
   }
-  event('post-clicked');
+  if (Constants.ENV === Environment.PROD) {
+    event('post-clicked');
+  }
   setLastClickedPost(post.id);
   router.push({
     path: `/post/${post.id}`,
@@ -164,7 +171,10 @@ function share() {
   // add to clipboard
   navigator.clipboard.writeText(`https://progresspicsearch.com/post/${post.id}`);
   toast.add({
-    severity: 'success', summary: 'Url Copied To Clipboard', detail: `https://progresspicsearch.com/post/${post.id}`, life: 3000,
+    severity: 'success', 
+    summary: 'Url Copied To Clipboard', 
+    // detail: `https://progresspicsearch.com/post/${post.id}`, 
+    life: 3000,
   });
 }
 
@@ -212,7 +222,30 @@ const iframeCss = computed(() => {
 });
 
 function buildTitle(post:BeforeAfterPicture) {
-  return `${post.startWeight} lbs → ${post.endWeight} lbs (${post.weightChange} lbs)`;
+  return useLbs.value?
+    `${post.startWeight} lbs → ${post.endWeight} lbs 
+    (${post.weightChange} lbs)` :
+    `${lbTokgs(post.startWeight)} kg → ${lbTokgs(post.endWeight)} kg 
+    (${lbTokgs(post.weightChange)} kg)`;
+}
+
+function lbTokgs(lbs:number): number {
+  return Math.round(lbs/2.205);
+}
+
+function formatHeight(inches: number): string {
+  if (useFt.value) {
+    const end = inches % 12;
+    if (end === 0) {
+      return " " + Math.floor(inches/12) + "ft";
+    }
+    else {
+      return " " + Math.floor(inches/12) + "'" + end + '"';
+    }
+  }
+  else {
+    return Math.floor(inches * 2.54) + "cm";
+  }
 }
 
 // eslint-disable-next-line no-shadow

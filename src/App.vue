@@ -60,15 +60,21 @@ import { SearchParams } from './models';
   const pageOffset = ref<number>(0);
   const lastSearchParams = ref<Partial<SearchParams>>({});
   const lastClickedPost = ref<number>(-1);
+  const useLbs = ref<boolean>(true);
+  const useFt = ref<boolean>(true);
 
   // store users last search for going back to search page
   provide('pageOffset', pageOffset);
   provide('lastSearchParams', lastSearchParams);
   provide('lastClickedPost', lastClickedPost);
+  provide('useLbs', useLbs);
+  provide('useFt', useFt);
 
   provide('setPageOffset', (offset:number) => pageOffset.value = offset);
   provide('setLastSearchParams', (searchParams:Partial<SearchParams>) => lastSearchParams.value = searchParams);
   provide('setLastClickedPost', (lastId:number) => lastClickedPost.value = lastId);
+  provide('setUseLbs', (useLbsIn:boolean) => useLbs.value = useLbsIn);
+  provide('setUseFt', (useFtIn:boolean) => useFt.value = useFtIn);
 
   // Refs
   const menuRef = ref(null);

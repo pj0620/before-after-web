@@ -1,24 +1,29 @@
 <template>
   <div class="card bg-primary pt-2">
     <div class="flex flex-column card-container green-container">
-      <div class="flex flex-row justify-content-between align-content-between input-row-weight">
+      <div class="flex flex-row justify-content-end align-content-end input-row-weight mb-2">
+        <h3 class="entry-label-unit">Select Unit: </h3>
+        <ToggleButton class="toggle-unit p-1" @change="updateUseLbs" v-model="useLbs" onLabel="lbs" offLabel="kgs" />
+        <ToggleButton class="toggle-unit p-1" @change="updateUseFt" v-model="useFt" onLabel="ft/inch" offLabel="cm" />
+      </div>
+      <div class="flex flex-row justify-content-between align-content-between input-row-weight mb-3">
         <h3 class="flex align-items-center justify-content-center entry-label-weight">Start Weight</h3>
         <InputNumber
           class="flex align-items-center justify-content-center weight-input"
           v-model="startWeight"
           v-on:keyup.enter="search" 
           showButtons
-          suffix=" lbs"
+          :suffix="useLbs ? ' lbs' : ' kgs'"
         />
       </div>
-      <div class="flex flex-row justify-content-between align-content-center input-row-weight">
+      <div class="flex flex-row justify-content-between align-content-center input-row-weight mb-3">
         <h3 class="align-items-center justify-content-center entry-label-weight">End Weight</h3>
         <InputNumber
           class="align-items-center justify-content-center weight-input"
           v-model="endWeight"
           v-on:keyup.enter="search" 
           showButtons
-          suffix=" lbs"
+          :suffix="useLbs ? ' lbs' : ' kgs'"
         />
       </div>
       <Button
@@ -45,6 +50,11 @@
           placeholder="Both"
         />
       </div>
+      <div class="flex input-row align-items-center justify-content-between p-field-checkbox entry-label">
+        <label for="height-select" class="mr-1">Height</label>
+        <TreeSelect id="height-select" v-model="heightSelected"
+            :options="useFt ? heightOptionsFt : heightOptionsCm" placeholder="Any"/>
+      </div>
     </div>
   </div>
 </template>
@@ -53,7 +63,8 @@
 import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import TreeSelect from 'primevue/treeselect';
-import { ref, defineEmits } from 'vue';
+import ToggleButton from 'primevue/togglebutton';
+import { ref, defineEmits, inject, Ref, computed } from 'vue';
 import { SearchParams } from '@/models/search-params.model';
 
 const emit = defineEmits(['search']);
@@ -75,11 +86,58 @@ const genderOptions = [
   { key: 'B', label: 'Both' },
 ];
 
+// height input
+const heightSelected = ref({ Any: true });
+
+const heightOptionsFt = [
+  { key: 'Any', label: 'Any' },
+  { key: `< 4''`, label: `< 4'` },
+];
+for (let ft=4; ft < 7; ft++) {
+  for (let inch=0; inch < 12; inch++) {
+    heightOptionsFt.push({ 
+      key: inch ? `${ft}'${inch}` : `${ft}'`, 
+      label: inch ? `${ft}'${inch}` : `${ft}'`
+    });
+  }
+}
+heightOptionsFt.push({ key: `>= 7'`, label: `>= 7'` });
+
+const heightOptionsCm = [
+  { key: 'Any', label: 'Any' },
+  { key: `< 122cm`, label: `< 122cm` },
+];
+for (let cm=123; cm < 214; cm++) {
+  heightOptionsCm.push({ 
+    key: `${cm}cm`, 
+    label: `${cm}cm`
+  });
+}
+heightOptionsCm.push({ key: `> 214cm`, label: `> 214cm` });
+
+const useLbs:Ref<boolean> = inject('useLbs') || ref(true);
+const setUseLbs:any = inject('setUseLbs')!;
+const updateUseLbs = () => {
+  setUseLbs(useLbs.value);
+} 
+
+const useFt:Ref<boolean> = inject('useFt') || ref(true);
+const setUseFt:any = inject('setUseFt')!;
+const updateUseFt = () => {
+  setUseFt(useFt.value);
+} 
+
 const search = () => {
-  const searchParams: Partial<SearchParams> = {
-    start_weight: startWeight.value,
-    end_weight: endWeight.value,
-  };
+  const searchParams: Partial<SearchParams> = {};
+
+  if (useLbs.value) {
+    searchParams.start_weight = startWeight.value;
+    searchParams.end_weight = endWeight.value;
+  }
+  else {
+    searchParams.start_weight = Math.round(startWeight.value * 2.205);
+    searchParams.end_weight = Math.round(endWeight.value * 2.205);
+  }
 
   if (Object.prototype.hasOwnProperty.call(genderSelected.value, 'M')) {
     searchParams.gender = 'M';
@@ -93,11 +151,50 @@ const search = () => {
     searchParams.nsfw = false;
   }
 
+  if (!Object.prototype.hasOwnProperty.call(heightSelected.value, 'Any')) {
+    let heightStr = Object.keys(heightSelected.value)[0];
+    let lt = heightStr.includes('<');
+    let gt = heightStr.includes('>');
+    heightStr = heightStr.replaceAll('< ', '').replaceAll('> ', '');
+    if (heightStr.includes('cm')) {
+      searchParams.height = Math.round(
+        parseInt(heightStr.replace('cm', '')) / 2.54
+      );
+    }
+    else {
+      const split = heightStr.split("'");
+      if (!split[1]) {
+        searchParams.height = parseInt(split[0]) * 12;
+      }
+      else {
+        searchParams.height = parseInt(split[0]) * 12 + parseInt(split[1]);
+      }
+    }
+  }
+
   emit('search', searchParams);
 };
 </script>
 
 <style>
+.toggle-unit {
+  color: white;
+  font-weight: 900;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  height: 1.2rem;
+}
+
+.entry-label-unit {
+  color: white;
+  font-weight: 900;
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+  height: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .p-treeselect-label {
   color: #6c757d;
 }
