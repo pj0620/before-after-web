@@ -50,9 +50,9 @@
             </div>
             <div class="flex flex-row flex-wrap card-container h-full pl-2 pb-2">
                 <div class="flex align-items-center justify-content-center p-field-checkbox mr-5 entry-label">
-                    <label for="nsfw-select" class="mr-1">NSFW</label>
+                    <label for="nsfw-select" class="mr-1">NSFW / SFW</label>
                     <TreeSelect id="nsfw-select" v-model="nsfwSelected"
-                        :options="nsfwOptions" placeholder="Both NSFW/SFW"/>
+                        :options="nsfwOptions" placeholder="Both"/>
                 </div>
                 <div class="flex align-items-center justify-content-center p-field-checkbox mr-5 entry-label">
                     <label for="gender-select" class="mr-1">Gender</label>
@@ -74,25 +74,29 @@ import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import TreeSelect from 'primevue/treeselect';
 import ToggleButton from 'primevue/togglebutton';
+import { useGtag } from 'vue-gtag-next';
 import { ref, defineEmits, Ref, inject } from 'vue';
 import { SearchParams } from '@/models/search-params.model';
+import { Constants, Environment } from '@/constants';
 
 const emit = defineEmits(['search']);
+
+const { event } = useGtag();
 
 const startWeight = ref(200);
 const endWeight = ref(100);
 
 const nsfwSelected = ref({ Both: true });
 const nsfwOptions = [
-  { key: 'NSFW', label: 'NSFW' },
-  { key: 'SFW', label: 'SFW' },
-  { key: 'Both', label: 'Both NSFW/SFW' },
+  { key: 'NSFW', label: '🥵NSFW' },
+  { key: 'SFW', label: '😇SFW' },
+  { key: 'Both', label: 'Both' },
 ];
 
 const genderSelected = ref({ B: true });
 const genderOptions = [
-  { key: 'M', label: 'Male' },
-  { key: 'F', label: 'Female' },
+  { key: 'M', label: '👨Male' },
+  { key: 'F', label: '👩Female' },
   { key: 'B', label: 'Both' },
 ];
 
@@ -130,6 +134,9 @@ const lbsSelected = ref(useLbs.value);
 const kgSelected = ref(!useLbs.value);
 const setUseLbs:any = inject('setUseLbs')!;
 const updateUseLbs = (newV: boolean) => {
+  if (Constants.ENV === Environment.PROD) {
+    event(newV ? 'set-to-lbs' : 'set-to-kg');
+  }
   if (newV) {
     lbsSelected.value = true;
     kgSelected.value = false;
@@ -146,6 +153,9 @@ const ftSelected = ref(useFt.value);
 const cmSelected = ref(!useFt.value);
 const setUseFt:any = inject('setUseFt')!;
 const updateUseFt = (newV: boolean) => {
+  if (Constants.ENV === Environment.PROD) {
+    event(newV ? 'set-to-ft' : 'set-to-cm');
+  }
   if (newV) {
     ftSelected.value = true;
     cmSelected.value = false;

@@ -130,7 +130,9 @@ async function likePost() {
   post.likes++;
 }
 async function dislikePost() {
-  event('dislike');
+  if (Constants.ENV === Environment.PROD) {
+    event('dislike');
+  }
   if (props.likeDisabled) {
     return;
   }
@@ -156,7 +158,9 @@ function gotoPost() {
 }
 const toast = useToast();
 function share() {
-  event('share');
+  if (Constants.ENV === Environment.PROD) {
+    event('share');
+  }
   // try to share using mobile
   try {
     navigator.share({

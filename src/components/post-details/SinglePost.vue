@@ -121,23 +121,21 @@ const newComment = ref('');
 const errorMsg = ref('');
 
 function postComment() {
-  event('post-comment');
   if (newComment.value.length == 0) {
     errorMsg.value = 'Error: Empty Comment';
-    return;
-  }
-  if (!isASCII(newComment.value)) {
-    errorMsg.value = 'Error: Comment contains invalid characters';
+    event('error-comment-empty');
     return;
   }
   if (newComment.value.length > Constants.MAX_COMMENT_LENGTH) {
     errorMsg.value = 'Error: Max comment length is 250 characters';
+    event('error-comment-toolong');
     return;
   }
   if (_.isEmpty(post)) {
     return;
   }
   errorMsg.value = '';
+  event('post-comment');
   BeforeAfterPicsService
     .postComment(post.id, newComment.value)
     .then((resp: CommentI) => {
@@ -146,11 +144,6 @@ function postComment() {
       newComment.value = '';
     })
     .catch(() => console.log('error while posting comment'));
-}
-
-function isASCII(str:string) {
-  const extended = true;
-  return (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(str);
 }
 
 // eslint-disable-next-line no-shadow
