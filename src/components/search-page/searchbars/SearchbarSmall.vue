@@ -3,8 +3,37 @@
     <div class="flex flex-column card-container green-container">
       <div class="flex flex-row justify-content-end align-content-end input-row-weight mb-2">
         <h3 class="entry-label-unit">Select Unit: </h3>
-        <ToggleButton class="toggle-unit p-1" @change="updateUseLbs" v-model="useLbs" onLabel="lbs" offLabel="kgs" />
-        <ToggleButton class="toggle-unit p-1" @change="updateUseFt" v-model="useFt" onLabel="ft/inch" offLabel="cm" />
+        <ToggleButton 
+          class="toggle-unit p-1" 
+          @change="updateUseLbs(true)" 
+          v-model="lbsSelected"
+          :class="{'toggle-selected': lbsSelected}"
+          onLabel="lbs" 
+          offLabel="lbs"/>
+        <ToggleButton 
+          class="toggle-unit p-1" 
+          @change="updateUseLbs(false)" 
+          v-model="kgSelected"
+          :class="{'toggle-selected': kgSelected}"
+          onLabel="kgs" 
+          offLabel="kgs"/>
+        <div 
+          style="border-left: 1px solid white;height: 1.2rem;"
+          class="mr-2"></div>
+        <ToggleButton 
+          class="toggle-unit p-1" 
+          @change="updateUseFt(true)" 
+          v-model="ftSelected" 
+          :class="{'toggle-selected': ftSelected}"
+          onLabel="ft/inch" 
+          offLabel="ft/inch"/>
+        <ToggleButton 
+          class="toggle-unit p-1" 
+          @change="updateUseFt(false)" 
+          v-model="cmSelected" 
+          :class="{'toggle-selected': cmSelected}"
+          onLabel="cm" 
+          offLabel="cm"/>
       </div>
       <div class="flex flex-row justify-content-between align-content-between input-row-weight mb-3">
         <h3 class="flex align-items-center justify-content-center entry-label-weight">Start Weight</h3>
@@ -34,12 +63,13 @@
       />
       <div class="flex input-row align-items-center justify-content-between p-field-checkbox entry-label">
         <label for="nsfw-select" class="mr-1">NSFW</label>
-        <TreeSelect
+        
+        <!-- <TreeSelect
           id="nsfw-select"
           v-model="nsfwSelected"
           :options="nsfwOptions"
           placeholder="Both NSFW/SFW"
-        />
+        /> -->
       </div>
       <div class="flex input-row align-items-center justify-content-between p-field-checkbox entry-label">
         <label for="gender-select" class="mr-1">Gender</label>
@@ -116,14 +146,35 @@ for (let cm=123; cm < 214; cm++) {
 heightOptionsCm.push({ key: `> 214cm`, label: `> 214cm` });
 
 const useLbs:Ref<boolean> = inject('useLbs') || ref(true);
+const lbsSelected = ref(useLbs.value);
+const kgSelected = ref(!useLbs.value);
 const setUseLbs:any = inject('setUseLbs')!;
-const updateUseLbs = () => {
+const updateUseLbs = (newV: boolean) => {
+  console.log('updateUseLbs -> ' + newV);
+  if (newV) {
+    lbsSelected.value = true;
+    kgSelected.value = false;
+  }
+  else {
+    lbsSelected.value = false;
+    kgSelected.value = true;
+  }
   setUseLbs(useLbs.value);
 } 
 
 const useFt:Ref<boolean> = inject('useFt') || ref(true);
+const ftSelected = ref(useFt.value);
+const cmSelected = ref(!useFt.value);
 const setUseFt:any = inject('setUseFt')!;
-const updateUseFt = () => {
+const updateUseFt = (newV: boolean) => {
+  if (newV) {
+    ftSelected.value = true;
+    cmSelected.value = false;
+  }
+  else {
+    ftSelected.value = false;
+    cmSelected.value = true;
+  }
   setUseFt(useFt.value);
 } 
 

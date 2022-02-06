@@ -31,8 +31,7 @@
       </div>
       <div class="flex flex-row flex-wrap justify-content-between mx-2">
           <div class="flex text-white subheading-text">
-              {{post.gender? post.gender=="M" ? "Male," : "Female," : "" }}
-              {{post.age}}{{post.height ? ',' + formatHeight(post.height) : ''}}
+              {{post.gender? post.gender=="M" ? "Male," : "Female," : "" }} {{post.age}}{{post.height ? ',' + formatHeight(post.height) : ''}}
           </div>
           <div class="flex text-white subheading-text">
               {{getDateDesc(post.createdAt)}}
@@ -327,8 +326,10 @@ function niceNumber(likes:number):string {
   }
 
   .subheading-text {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: lighter;
+    letter-spacing: 0rem;
+    /* font-family: 'Open Sans', sans-serif; */
   }
 
   a {
