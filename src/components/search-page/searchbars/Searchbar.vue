@@ -3,7 +3,7 @@
         <div class="flex flex-column card-container green-container">
             <div class="flex flex-wrap card-container">
                 <div class="flex flex-row align-items-center justify-content-center
-                  pl-3 my-1">
+                  pl-3 mt-1 mb-3">
                     <h3 class="entry-label-unit">Select Unit: </h3>
                     <ToggleButton 
                       class="toggle-unit p-1" 
@@ -21,7 +21,7 @@
                       offLabel="kgs"/>
                     <div 
                       style="border-left: 1px solid white;height: 1.2rem;"
-                      class="mr-2"></div>
+                      class="mr-2 ml-0"></div>
                     <ToggleButton 
                       class="toggle-unit p-1" 
                       @change="updateUseFt(true)" 
@@ -88,15 +88,15 @@ const endWeight = ref(100);
 
 const nsfwSelected = ref({ Both: true });
 const nsfwOptions = [
-  { key: 'NSFW', label: '🥵NSFW' },
-  { key: 'SFW', label: '😇SFW' },
+  { key: 'NSFW', label: '🌶️ NSFW' },
+  { key: 'SFW', label: '😇 SFW' },
   { key: 'Both', label: 'Both' },
 ];
 
 const genderSelected = ref({ B: true });
 const genderOptions = [
-  { key: 'M', label: '👨Male' },
-  { key: 'F', label: '👩Female' },
+  { key: 'M', label: '👨 Male' },
+  { key: 'F', label: '👩 Female' },
   { key: 'B', label: 'Both' },
 ];
 

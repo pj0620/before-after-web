@@ -107,15 +107,15 @@ const endWeight = ref(100);
 
 const nsfwSelected = ref({ Both: true });
 const nsfwOptions = [
-  { key: 'NSFW', label: '🥵NSFW' },
-  { key: 'SFW', label: '😇SFW' },
+  { key: 'NSFW', label: '🌶️ NSFW' },
+  { key: 'SFW', label: '😇 SFW' },
   { key: 'Both', label: 'Both' },
 ];
 
 const genderSelected = ref({ B: true });
 const genderOptions = [
-  { key: 'M', label: '👨Male' },
-  { key: 'F', label: '👩Female' },
+  { key: 'M', label: '👨 Male' },
+  { key: 'F', label: '👩 Female' },
   { key: 'B', label: 'Both' },
 ];
 
