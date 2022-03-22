@@ -1,11 +1,11 @@
 <template>
   <div class="card bg-primary pt-2">
     <div class="flex flex-column card-container green-container">
-      <div class="flex flex-row justify-content-end align-content-end input-row-weight mb-2">
+      <div class="flex flex-row justify-content-end align-content-end input-row-weight mb-1">
         <h3 class="entry-label-unit">Select Unit: </h3>
         <ToggleButton 
           class="toggle-unit p-1" 
-          @change="updateUseLbs(true)" 
+          @change="updateUseLbs(true)"
           v-model="lbsSelected"
           :class="{'toggle-selected': lbsSelected}"
           onLabel="lbs" 
@@ -14,7 +14,7 @@
           class="toggle-unit p-1" 
           @change="updateUseLbs(false)" 
           v-model="kgSelected"
-          :class="{'toggle-selected': kgSelected}"
+          :class="{'toggle-selected': !lbsSelected}"
           onLabel="kgs" 
           offLabel="kgs"/>
         <div 
@@ -35,7 +35,7 @@
           onLabel="cm" 
           offLabel="cm"/>
       </div>
-      <div class="flex flex-row justify-content-between align-content-between input-row-weight mb-3">
+      <div class="flex flex-row justify-content-between align-content-between input-row-weight mb-0">
         <h3 class="flex align-items-center justify-content-center entry-label-weight">Start Weight</h3>
         <InputNumber
           class="flex align-items-center justify-content-center weight-input"
@@ -45,7 +45,7 @@
           :suffix="useLbs ? ' lbs' : ' kgs'"
         />
       </div>
-      <div class="flex flex-row justify-content-between align-content-center input-row-weight mb-3">
+      <div class="flex flex-row justify-content-between align-content-center input-row-weight mb-0">
         <h3 class="align-items-center justify-content-center entry-label-weight">End Weight</h3>
         <InputNumber
           class="align-items-center justify-content-center weight-input"
@@ -61,29 +61,33 @@
         class="flex border-white border-3 border-round text-lg font-bold"
         @click="search"
       />
-      <div class="flex input-row align-items-center justify-content-between p-field-checkbox entry-label">
-        <label for="nsfw-select" class="mr-1">NSFW / SFW</label>
-        <TreeSelect
-          id="nsfw-select"
-          v-model="nsfwSelected"
-          :options="nsfwOptions"
-          placeholder="Both"
-        />
-      </div>
-      <div class="flex input-row align-items-center justify-content-between p-field-checkbox entry-label">
-        <label for="gender-select" class="mr-1">Gender</label>
-        <TreeSelect
-          id="gender-select"
-          v-model="genderSelected"
-          :options="genderOptions"
-          placeholder="Both"
-        />
-      </div>
-      <div class="flex input-row align-items-center justify-content-between p-field-checkbox entry-label">
-        <label for="height-select" class="mr-1">Height</label>
-        <TreeSelect id="height-select" v-model="heightSelected"
-            :options="useFt ? heightOptionsFt : heightOptionsCm" placeholder="Any"/>
-      </div>
+      <Accordion>
+	      <AccordionTab header="More Options">
+          <div class="flex input-row align-items-center justify-content-between p-field-checkbox entry-label">
+            <label for="nsfw-select" class="mr-1">NSFW / SFW</label>
+            <TreeSelect
+              id="nsfw-select"
+              v-model="nsfwSelected"
+              :options="nsfwOptions"
+              placeholder="Both"
+            />
+          </div>
+          <div class="flex input-row align-items-center justify-content-between p-field-checkbox entry-label">
+            <label for="gender-select" class="mr-1">Gender</label>
+            <TreeSelect
+              id="gender-select"
+              v-model="genderSelected"
+              :options="genderOptions"
+              placeholder="Both"
+            />
+          </div>
+          <div class="flex input-row align-items-center justify-content-between p-field-checkbox entry-label">
+            <label for="height-select" class="mr-1">Height</label>
+            <TreeSelect id="height-select" v-model="heightSelected"
+                :options="useFt ? heightOptionsFt : heightOptionsCm" placeholder="Any"/>
+          </div>
+        </AccordionTab>
+      </Accordion>
     </div>
   </div>
 </template>
@@ -93,6 +97,8 @@ import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import TreeSelect from 'primevue/treeselect';
 import ToggleButton from 'primevue/togglebutton';
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
 import { useGtag } from 'vue-gtag-next';
 import { ref, defineEmits, inject, Ref, computed } from 'vue';
 import { SearchParams } from '@/models/search-params.model';
@@ -164,6 +170,7 @@ const updateUseLbs = (newV: boolean) => {
     lbsSelected.value = false;
     kgSelected.value = true;
   }
+  useLbs.value = newV;
   setUseLbs(useLbs.value);
 } 
 
@@ -183,6 +190,7 @@ const updateUseFt = (newV: boolean) => {
     ftSelected.value = false;
     cmSelected.value = true;
   }
+  useFt.value = newV;
   setUseFt(useFt.value);
 } 
 
@@ -236,6 +244,25 @@ const search = () => {
 </script>
 
 <style>
+.toggle-selected {
+  background-color: white !important; 
+  color: var(--color-primary) !important;
+}
+
+.p-accordion-content {
+  background: var(--color-primary) !important;
+  padding: 0 !important;
+  border: 0 solid !important;
+}
+
+.p-accordion-header-link {
+  background: transparent !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 1.25rem !important;
+  box-shadow: none !important;
+}
+
 .toggle-unit {
   color: white;
   font-weight: 900;
@@ -294,7 +321,7 @@ button.p-tree-toggler {
 }
 
 #search-button {
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
   margin-left: 1rem;
   margin-right: 1rem;
 }
