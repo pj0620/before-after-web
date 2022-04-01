@@ -9,7 +9,6 @@
       </div>
       <div class="flex flex-row flex-wrap justify-content-between mb-1 mx-2">
           <div class="flex flew-row text-white subheading-text">
-              <!-- <i class="flex align-items-center pi pi-thumbs-up mr-1 pb-1 post-subtext" @click="toggleLike"></i> -->
               <svg v-if="liked" @click.stop="dislikePost" class="like-button" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <g fill="none" stroke="#fffffe">
                 <path d="m17.25 20.75h-11.62c-1.3067 4.6e-5 -2.369-1.0534-2.38-2.36v-5.64c0.00551-1.3105 1.0695-2.37 2.38-2.37h2l2.73-6.09c0.38776-0.86557 1.3945-1.2647 2.27-0.9 1.1499 0.50943 1.8883 1.6523 1.88 2.91v2.47h4c0.05627-0.00951 0.11373-0.00951 0.17 0 0.63392 0.12219 1.1983 0.47937 1.58 1 0.36058 0.48098 0.51851 1.084 0.44 1.68l-1.1 7.29c-0.18208 1.1569-1.1788 2.0095-2.35 2.01z" fill="#fff" stroke="none"/>
@@ -22,7 +21,7 @@
               <Tag value="nsfw" severity="danger" class="flex align-items-center ml-2" v-if="post.nsfw"></Tag>
           </div>
 
-          <div class="flex flex-row text-white subheading-text">
+          <div class="flex flex-row text-white subheading-text share-section">
               <i class="flex align-items-center pi pi-share-alt mr-2 share-icon"></i>
               <a class="flex align-items-center text-white post-subtext share-text underline" @click.stop="share">
                 Share
@@ -309,7 +308,8 @@ function niceNumber(likes:number):string {
 
   .like-button {
     color:white;
-    width: 1.4rem;
+    width: 1.6rem;
+    height: 1.6rem;
     padding-bottom: 0.2rem;
   }
 
@@ -351,5 +351,9 @@ function niceNumber(likes:number):string {
 
   .share-icon {
     font-size: 1rem;
+  }
+
+  .share-section {
+    cursor: pointer !important;
   }
 </style>

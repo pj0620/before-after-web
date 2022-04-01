@@ -1,7 +1,7 @@
 <template>
   <div class="card bg-primary pt-2">
     <div class="flex flex-column card-container green-container">
-      <div class="flex flex-row justify-content-end align-content-end input-row-weight mb-1">
+      <div class="flex flex-row justify-content-end align-content-end input-row-weight mb-3">
         <h3 class="entry-label-unit">Select Unit: </h3>
         <ToggleButton 
           class="toggle-unit p-1" 
@@ -35,7 +35,7 @@
           onLabel="cm" 
           offLabel="cm"/>
       </div>
-      <div class="flex flex-row justify-content-between align-content-between input-row-weight mb-0">
+      <div class="flex flex-row justify-content-between align-content-between input-row-weight mb-3">
         <h3 class="flex align-items-center justify-content-center entry-label-weight">Start Weight</h3>
         <InputNumber
           class="flex align-items-center justify-content-center weight-input"
@@ -45,7 +45,7 @@
           :suffix="useLbs ? ' lbs' : ' kgs'"
         />
       </div>
-      <div class="flex flex-row justify-content-between align-content-center input-row-weight mb-0">
+      <div class="flex flex-row justify-content-between align-content-center input-row-weight mb-3">
         <h3 class="align-items-center justify-content-center entry-label-weight">End Weight</h3>
         <InputNumber
           class="align-items-center justify-content-center weight-input"
