@@ -1,5 +1,14 @@
 <template>
     <div v-if="post.imageUrl" class="mb-3 pt-2 mx-3">
+        <div class="flex" v-if="showBackButton">
+          <Button 
+            icon="pi pi-chevron-left"
+            label="Back to Search Results" 
+            class="back-button"
+            @click="$router.push('/')" 
+          />
+        </div>
+
         <div class="flex flex-row align-items-center justify-content-center">
           <div class="flex align-items-center justify-content-center border-round shadow-2 mb-3 bg-primary px-2 pb-2 " id="mainPost">
             <Post
@@ -57,7 +66,7 @@ import _ from 'lodash';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import { useGtag } from 'vue-gtag-next';
-import { Constants } from '@/constants';
+import { Constants, Environment } from '@/constants';
 import Post from '../Post.vue';
 import { BeforeAfterPicture, CommentI } from '@/models';
 import RelatedPosts from './RelatedPosts.vue';
@@ -71,6 +80,10 @@ const { event } = useGtag();
 const props = defineProps({
   id: Number,
 });
+
+const showBackButton = ref(
+  Constants.ENV === Environment.IOS
+);
 
 const post: BeforeAfterPicture|{} = reactive<BeforeAfterPicture|{}>({});
 const relatedPosts: Ref<BeforeAfterPicture[]> = ref<BeforeAfterPicture[]>([]);
@@ -302,5 +315,11 @@ body {
 
 ::v-deep textarea.p-inputtextarea {
   resize: none !important;
+}
+
+.back-button {
+  color: white;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 </style>
