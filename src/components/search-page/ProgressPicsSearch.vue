@@ -8,13 +8,13 @@
   <!-- Non-empty -->
   <div id="photos" v-if="!loading && posts.length > 0"
     ref='scrollComponent'>
-    <div class="grid font-bold text-white border-round my-2 xl:mx-2 lg:mx-2 md:mx-2 sm:mx-0" >
-      <div class="xl:col-6 lg:col-6 md:col-6 sm:col-12 pb-0 pt-0"
+    <div class="grid font-bold text-white md:border-round lg:border-round xl:border-round mx-0 my-2" >
+      <div class="col-12 px-0 xl:col-6 lg:col-6 md:col-6 pb-0 pt-0 lg:px-1 md:px-1"
         v-for="post in posts"
         :key="post.id"
       >
-        <div class="post border-round shadow-2 w-full mb-2 bg-primary" :id="'post-' + post.id">
-          <Post :post="post" />
+        <div class="post md:border-round lg:border-round xl:border-round shadow-2 mb-2 bg-primary" :id="'post-' + post.id">
+          <Post :post="post"/>
         </div>
 
         <div v-if="Math.random() <= adProb" class="in-article-ad w-max h-max">
@@ -101,7 +101,7 @@ const updateViewMode = () => {
 updateViewMode();
 const { event } = useGtag();
 const search = (searchParamsIn: Partial<SearchParams>) => {
-  if (Constants.ENV === Environment.PROD) {
+  if (Constants.ENV === Environment.WEB) {
     event('search');
   }
   const loading = ref(true);
@@ -121,7 +121,7 @@ function loadMorePosts(): void {
   if (loadingMorePosts.value) {
     return;
   }
-  if (Constants.ENV === Environment.PROD) {
+  if (Constants.ENV === Environment.WEB) {
     event('load-more-posts-main');
   }
   setPageOffset(postsOffset.value + postsLimit);

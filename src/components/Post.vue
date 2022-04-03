@@ -67,13 +67,13 @@ import {
   PropType, ref, defineProps, computed, onMounted, onUnmounted, Ref, reactive, watch, inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { useCookies } from 'vue3-cookies';
 import ToastService from 'primevue/toastservice';
 import { useToast } from 'primevue/usetoast';
 import { useGtag } from 'vue-gtag-next';
 import { BeforeAfterPicsService } from '@/services';
 import { Constants, Environment } from '@/constants';
 import { BeforeAfterPicture } from '@/models';
+import { StorgeService } from '@/services/storage.service';
 
 const props = defineProps({
   post: {
@@ -109,15 +109,19 @@ if (!setLastClickedPost) {
 }
 
 const { event } = useGtag();
-const { cookies } = useCookies();
 let cookieKey = `post/${post.id}`;
-const liked = ref(cookies.get(cookieKey) === 'true');
+const liked = ref(false);
+StorgeService.get(cookieKey)
+  .then((resp) => liked.value = resp === 'true')
+  .catch(e => console.error(e));
 watch(post, (oldV, newV) => {
   cookieKey = `post/${post.id}`;
-  liked.value = cookies.get(cookieKey) === 'true';
+  StorgeService.get(cookieKey)
+    .then((resp) => liked.value = resp === 'true')
+    .catch(e => console.error(e));
 });
 async function likePost() {
-  if (Constants.ENV === Environment.PROD) {
+  if (Constants.ENV === Environment.WEB) {
     event('like');
   }
   if (props.likeDisabled) {
@@ -125,11 +129,12 @@ async function likePost() {
   }
   await BeforeAfterPicsService.likePost(post.id);
   liked.value = true;
-  cookies.set(cookieKey, 'true');
+  StorgeService.set(cookieKey, 'true')
+    .catch(e => console.error(e));
   post.likes++;
 }
 async function dislikePost() {
-  if (Constants.ENV === Environment.PROD) {
+  if (Constants.ENV === Environment.WEB) {
     event('dislike');
   }
   if (props.likeDisabled) {
@@ -137,7 +142,8 @@ async function dislikePost() {
   }
   await BeforeAfterPicsService.dislikePost(post.id);
   liked.value = false;
-  cookies.set(cookieKey, 'false');
+  StorgeService.set(cookieKey, 'false')
+    .catch(e => console.error(e));
   post.likes--;
 }
 
@@ -146,7 +152,7 @@ function gotoPost() {
   if (!props.clickable) {
     return;
   }
-  if (Constants.ENV === Environment.PROD) {
+  if (Constants.ENV === Environment.WEB) {
     event('post-clicked');
   }
   setLastClickedPost(post.id);
@@ -157,7 +163,7 @@ function gotoPost() {
 }
 const toast = useToast();
 function share() {
-  if (Constants.ENV === Environment.PROD) {
+  if (Constants.ENV === Environment.WEB) {
     event('share');
   }
   // try to share using mobile

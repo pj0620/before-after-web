@@ -134,7 +134,7 @@ const lbsSelected = ref(useLbs.value);
 const kgSelected = ref(!useLbs.value);
 const setUseLbs:any = inject('setUseLbs')!;
 const updateUseLbs = (newV: boolean) => {
-  if (Constants.ENV === Environment.PROD) {
+  if (Constants.ENV === Environment.WEB) {
     event(newV ? 'set-to-lbs' : 'set-to-kg');
   }
   if (newV) {
@@ -153,7 +153,7 @@ const ftSelected = ref(useFt.value);
 const cmSelected = ref(!useFt.value);
 const setUseFt:any = inject('setUseFt')!;
 const updateUseFt = (newV: boolean) => {
-  if (Constants.ENV === Environment.PROD) {
+  if (Constants.ENV === Environment.WEB) {
     event(newV ? 'set-to-ft' : 'set-to-cm');
   }
   if (newV) {

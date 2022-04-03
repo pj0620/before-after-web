@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "Progress Pic Search",
+	"webDir": "dist",
+	"bundledWebRuntime": false
+}
