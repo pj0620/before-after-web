@@ -182,28 +182,28 @@ function getDateDesc(date:string): string {
 </script>
 
 <style scoped>
-::v-deep #mainPost .post-subtext {
+/* ::v-deep #mainPost .post-subtext {
     font-size: 1.8rem;
-}
+} */
 
-::v-deep #mainPost .share-icon {
+/* ::v-deep #mainPost .share-icon {
     font-size: 1.2rem;
-}
+} */
 
 ::v-deep #mainPost .heading-text {
-    font-size: 2.75rem;
+    font-size: 2rem;
 }
 
 .post {
     padding: 0.5rem;
 }
 
-::v-deep #mainPost .like-button {
+/* ::v-deep #mainPost .like-button {
     color:white;
     width: 2.4rem;
     padding-bottom: 0.2rem;
     margin-right: 0.1rem;
-}
+} */
 
 ::v-deep #mainPost a.share-text {
     font-size: 1.1rem;
@@ -213,17 +213,17 @@ function getDateDesc(date:string): string {
 }
 
 ::v-deep #mainPost .p-tag {
-    height: 1.5rem;
+    height: 1.1rem;
     margin-top:0.5rem;
 }
 
-::v-deep #mainPost .comment-icon{
+/* ::v-deep #mainPost .comment-icon{
     margin-right: 0.4rem;
-}
+} */
 
-::v-deep #mainPost .subheading-text{
+/* ::v-deep #mainPost .subheading-text{
     font-size: 1.5rem;
-}
+} */
 
 .post-button {
   float: right;
