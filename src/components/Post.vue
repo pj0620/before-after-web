@@ -37,7 +37,7 @@
           </div>
       </div>
       <div v-if="Constants.INCLUDE_SOURCE" class="flex flex-row flex-wrap justify-content-between mx-2">
-          <a :href="post.originalPost" class="source-text" target="_blank">
+          <a class="source-text" @click.stop="gotoSource">
               source
           </a>
       </div>
@@ -74,6 +74,7 @@ import { BeforeAfterPicsService } from '@/services';
 import { Constants, Environment } from '@/constants';
 import { BeforeAfterPicture } from '@/models';
 import { StorgeService } from '@/services/storage.service';
+import { Dialog } from '@capacitor/dialog';
 
 const props = defineProps({
   post: {
@@ -161,22 +162,40 @@ function gotoPost() {
   });
   window.scrollTo(0, 0);
 }
+
+const gotoSource = () => {
+  if (Constants.ENV !== Environment.IOS) {
+    window.location.href = post.originalPost;
+    return;
+  }
+
+  Dialog.confirm({
+    title: 'Confirm',
+    message: `Redirect to ${post.originalPost}`,
+  }).then(resp => {
+    if (resp.value) {
+      window.location.href = post.originalPost;
+    }
+  });
+}
+
 const toast = useToast();
 function share() {
   if (Constants.ENV === Environment.WEB) {
     event('share');
   }
-  // try to share using mobile
+
+  //try to share using mobile
   try {
     navigator.share({
       title: 'Progresspic',
-      text: `Check out this ${post.weightChange} lb weight loss photo!`,
+      text: `Check out this ${post.weightChange} lb weight loss photo! progresspicsearch.com/post/${post.id}`,
       url: `https://progresspicsearch.com/post/${post.id}`,
     });
     return;
   } catch (e) {}
 
-  // add to clipboard
+  //add to clipboard
   navigator.clipboard.writeText(`https://progresspicsearch.com/post/${post.id}`);
   toast.add({
     severity: 'success', 
@@ -349,6 +368,7 @@ function niceNumber(likes:number):string {
   a.source-text {
     font-size: 1rem;
     margin-bottom: 0.5rem;
+    text-decoration: underline;
   }
 
   .comment-icon{
