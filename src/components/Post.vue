@@ -75,6 +75,7 @@ import { Constants, Environment } from '@/constants';
 import { BeforeAfterPicture } from '@/models';
 import { StorgeService } from '@/services/storage.service';
 import { Dialog } from '@capacitor/dialog';
+import { AnalyticsService } from '@/services/analytics.service';
 
 const props = defineProps({
   post: {
@@ -109,7 +110,6 @@ if (!setLastClickedPost) {
   throw Error('cannot find injected setLastClickedPost');
 }
 
-const { event } = useGtag();
 let cookieKey = `post/${post.id}`;
 const liked = ref(false);
 StorgeService.get(cookieKey)
@@ -123,7 +123,7 @@ watch(post, (oldV, newV) => {
 });
 async function likePost() {
   if (Constants.ENV === Environment.WEB) {
-    event('like');
+    AnalyticsService.analyticsEvent('like');
   }
   if (props.likeDisabled) {
     return;
@@ -136,7 +136,7 @@ async function likePost() {
 }
 async function dislikePost() {
   if (Constants.ENV === Environment.WEB) {
-    event('dislike');
+    AnalyticsService.analyticsEvent('dislike');
   }
   if (props.likeDisabled) {
     return;
@@ -154,7 +154,7 @@ function gotoPost() {
     return;
   }
   if (Constants.ENV === Environment.WEB) {
-    event('post-clicked');
+    AnalyticsService.analyticsEvent('post-clicked');
   }
   setLastClickedPost(post.id);
   router.push({
@@ -182,7 +182,7 @@ const gotoSource = () => {
 const toast = useToast();
 function share() {
   if (Constants.ENV === Environment.WEB) {
-    event('share');
+    AnalyticsService.analyticsEvent('share');
   }
 
   //try to share using mobile

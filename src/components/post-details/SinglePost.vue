@@ -65,17 +65,15 @@ import ProgressSpinner from 'primevue/progressspinner';
 import _ from 'lodash';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
-import { useGtag } from 'vue-gtag-next';
 import { Constants, Environment } from '@/constants';
 import Post from '../Post.vue';
 import { BeforeAfterPicture, CommentI } from '@/models';
 import RelatedPosts from './RelatedPosts.vue';
 import { BeforeAfterPicsService } from '@/services';
+import { AnalyticsService } from '@/services/analytics.service';
 
 const route = useRoute();
 const router = useRouter();
-
-const { event } = useGtag();
 
 const props = defineProps({
   id: Number,
@@ -136,19 +134,19 @@ const errorMsg = ref('');
 function postComment() {
   if (newComment.value.length == 0) {
     errorMsg.value = 'Error: Empty Comment';
-    event('error-comment-empty');
+    AnalyticsService.analyticsEvent('error-comment-empty');
     return;
   }
   if (newComment.value.length > Constants.MAX_COMMENT_LENGTH) {
     errorMsg.value = 'Error: Max comment length is 250 characters';
-    event('error-comment-toolong');
+    AnalyticsService.analyticsEvent('error-comment-toolong');
     return;
   }
   if (_.isEmpty(post)) {
     return;
   }
   errorMsg.value = '';
-  event('post-comment');
+  AnalyticsService.analyticsEvent('post-comment');
   BeforeAfterPicsService
     .postComment(post.id, newComment.value)
     .then((resp: CommentI) => {

@@ -6,7 +6,6 @@ export class StorgeService {
   static cookies = useCookies().cookies;
 
   static async set(key: string, value: string): Promise<void> {
-    console.log(`setting ${key} -> ${value}`);
     switch (Constants.ENV) {
       case Environment.LOCAL:
         this.cookies.set(key, value);
@@ -23,7 +22,6 @@ export class StorgeService {
   }
 
   static async get(key: string): Promise<string|null> {
-    console.log(`getting ${key}`);
     switch (Constants.ENV) {
       case Environment.LOCAL:
         return this.cookies.get(key);

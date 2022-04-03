@@ -49,6 +49,7 @@ import Post from '../Post.vue';
 import { SearchParams } from '@/models/search-params.model';
 import InArticleAd from '../InArticleAd.vue';
 import { Constants, Environment } from '@/constants';
+import { AnalyticsService } from '@/services/analytics.service';
 
 const postsLimit = Constants.POSTS_LIMIT;
 const postsOffset:Ref<number> = inject('pageOffset') || ref(postsLimit);
@@ -99,10 +100,9 @@ const updateViewMode = () => {
   }
 };
 updateViewMode();
-const { event } = useGtag();
 const search = (searchParamsIn: Partial<SearchParams>) => {
   if (Constants.ENV === Environment.WEB) {
-    event('search');
+    AnalyticsService.analyticsEvent('search');
   }
   const loading = ref(true);
   setPageOffset(0);
@@ -122,7 +122,7 @@ function loadMorePosts(): void {
     return;
   }
   if (Constants.ENV === Environment.WEB) {
-    event('load-more-posts-main');
+    AnalyticsService.analyticsEvent('load-more-posts-main');
   }
   setPageOffset(postsOffset.value + postsLimit);
   BeforeAfterPicsService

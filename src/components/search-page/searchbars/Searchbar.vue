@@ -74,14 +74,12 @@ import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import TreeSelect from 'primevue/treeselect';
 import ToggleButton from 'primevue/togglebutton';
-import { useGtag } from 'vue-gtag-next';
 import { ref, defineEmits, Ref, inject } from 'vue';
 import { SearchParams } from '@/models/search-params.model';
 import { Constants, Environment } from '@/constants';
+import { AnalyticsService } from '@/services/analytics.service';
 
 const emit = defineEmits(['search']);
-
-const { event } = useGtag();
 
 const startWeight = ref(200);
 const endWeight = ref(100);
@@ -135,7 +133,7 @@ const kgSelected = ref(!useLbs.value);
 const setUseLbs:any = inject('setUseLbs')!;
 const updateUseLbs = (newV: boolean) => {
   if (Constants.ENV === Environment.WEB) {
-    event(newV ? 'set-to-lbs' : 'set-to-kg');
+    AnalyticsService.analyticsEvent(newV ? 'set-to-lbs' : 'set-to-kg');
   }
   if (newV) {
     lbsSelected.value = true;
@@ -154,7 +152,7 @@ const cmSelected = ref(!useFt.value);
 const setUseFt:any = inject('setUseFt')!;
 const updateUseFt = (newV: boolean) => {
   if (Constants.ENV === Environment.WEB) {
-    event(newV ? 'set-to-ft' : 'set-to-cm');
+    AnalyticsService.analyticsEvent(newV ? 'set-to-ft' : 'set-to-cm');
   }
   if (newV) {
     ftSelected.value = true;
