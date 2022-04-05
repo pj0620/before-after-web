@@ -1,0 +1,7 @@
+{
+  "name": "Progress Pic Search",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}

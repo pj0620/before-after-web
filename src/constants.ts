@@ -1,7 +1,8 @@
 export const enum Environment {
-    LOCAL,
-    PROD
-}
+    LOCAL = 'local',
+    WEB = 'web',
+    IOS = 'ios'
+};
 
 export const Constants = {
   BASE_URL: 'https://api.progresspicsearch.com',
@@ -11,7 +12,7 @@ export const Constants = {
   INFINITE_SCROLL: true,
   AD_PROB: 0,
   POSTS_LIMIT: 10,
-  ENV: Environment.PROD,
+  ENV: Environment.IOS as Environment,
   INCLUDE_SOURCE: true,
   MAX_COMMENT_LENGTH: 250
 } as const;

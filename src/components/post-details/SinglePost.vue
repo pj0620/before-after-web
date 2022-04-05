@@ -1,5 +1,14 @@
 <template>
     <div v-if="post.imageUrl" class="mb-3 pt-2 mx-3">
+        <div class="flex" v-if="showBackButton">
+          <Button 
+            icon="pi pi-chevron-left"
+            label="Back to Search Results" 
+            class="back-button"
+            @click="$router.push('/')" 
+          />
+        </div>
+
         <div class="flex flex-row align-items-center justify-content-center">
           <div class="flex align-items-center justify-content-center border-round shadow-2 mb-3 bg-primary px-2 pb-2 " id="mainPost">
             <Post
@@ -35,7 +44,7 @@
             </div>
             </div>
             <p v-if="errorMsg !== ''" style="color: red; background-color: white;">{{errorMsg}}</p>
-            <Button label="Post Comment" class="ml-3 border-white border-3 border-round text-lg font-bold post-button" @click="postComment"/>
+            <Button :loading="pendingCommentPost" label="Post Comment" class="ml-3 border-white border-3 border-round text-lg font-bold post-button" @click="postComment"/>
         </div>
 
         <RelatedPosts
@@ -56,21 +65,23 @@ import ProgressSpinner from 'primevue/progressspinner';
 import _ from 'lodash';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
-import { useGtag } from 'vue-gtag-next';
-import { Constants } from '@/constants';
+import { Constants, Environment } from '@/constants';
 import Post from '../Post.vue';
 import { BeforeAfterPicture, CommentI } from '@/models';
 import RelatedPosts from './RelatedPosts.vue';
 import { BeforeAfterPicsService } from '@/services';
+import { AnalyticsService } from '@/services/analytics.service';
 
 const route = useRoute();
 const router = useRouter();
 
-const { event } = useGtag();
-
 const props = defineProps({
   id: Number,
 });
+
+const showBackButton = ref(
+  Constants.ENV === Environment.IOS
+);
 
 const post: BeforeAfterPicture|{} = reactive<BeforeAfterPicture|{}>({});
 const relatedPosts: Ref<BeforeAfterPicture[]> = ref<BeforeAfterPicture[]>([]);
@@ -120,30 +131,40 @@ watch(() => props.id, init);
 const newComment = ref('');
 const errorMsg = ref('');
 
+const pendingCommentPost = ref(false);
 function postComment() {
   if (newComment.value.length == 0) {
     errorMsg.value = 'Error: Empty Comment';
-    event('error-comment-empty');
+    AnalyticsService.analyticsEvent('error-comment-empty');
     return;
   }
   if (newComment.value.length > Constants.MAX_COMMENT_LENGTH) {
     errorMsg.value = 'Error: Max comment length is 250 characters';
-    event('error-comment-toolong');
+    AnalyticsService.analyticsEvent('error-comment-toolong');
     return;
   }
   if (_.isEmpty(post)) {
     return;
   }
+
+  if (pendingCommentPost.value) {
+    return;
+  }
+  pendingCommentPost.value = true;
   errorMsg.value = '';
-  event('post-comment');
+  AnalyticsService.analyticsEvent('post-comment');
   BeforeAfterPicsService
     .postComment(post.id, newComment.value)
     .then((resp: CommentI) => {
+      pendingCommentPost.value = false;
       post.comments++;
       comments.value.push(resp);
       newComment.value = '';
     })
-    .catch(() => console.log('error while posting comment'));
+    .catch(() => {
+      pendingCommentPost.value = false;
+      console.log('error while posting comment');
+    });
 }
 
 // eslint-disable-next-line no-shadow
@@ -182,28 +203,28 @@ function getDateDesc(date:string): string {
 </script>
 
 <style scoped>
-::v-deep #mainPost .post-subtext {
+/* ::v-deep #mainPost .post-subtext {
     font-size: 1.8rem;
-}
+} */
 
-::v-deep #mainPost .share-icon {
+/* ::v-deep #mainPost .share-icon {
     font-size: 1.2rem;
-}
+} */
 
 ::v-deep #mainPost .heading-text {
-    font-size: 2.75rem;
+    font-size: 2rem;
 }
 
 .post {
     padding: 0.5rem;
 }
 
-::v-deep #mainPost .like-button {
+/* ::v-deep #mainPost .like-button {
     color:white;
     width: 2.4rem;
     padding-bottom: 0.2rem;
     margin-right: 0.1rem;
-}
+} */
 
 ::v-deep #mainPost a.share-text {
     font-size: 1.1rem;
@@ -213,17 +234,17 @@ function getDateDesc(date:string): string {
 }
 
 ::v-deep #mainPost .p-tag {
-    height: 1.5rem;
+    height: 1.1rem;
     margin-top:0.5rem;
 }
 
-::v-deep #mainPost .comment-icon{
+/* ::v-deep #mainPost .comment-icon{
     margin-right: 0.4rem;
-}
+} */
 
-::v-deep #mainPost .subheading-text{
+/* ::v-deep #mainPost .subheading-text{
     font-size: 1.5rem;
-}
+} */
 
 .post-button {
   float: right;
@@ -302,5 +323,11 @@ body {
 
 ::v-deep textarea.p-inputtextarea {
   resize: none !important;
+}
+
+.back-button {
+  color: white;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 </style>

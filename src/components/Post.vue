@@ -37,7 +37,7 @@
           </div>
       </div>
       <div v-if="Constants.INCLUDE_SOURCE" class="flex flex-row flex-wrap justify-content-between mx-2">
-          <a :href="post.originalPost" class="source-text" target="_blank">
+          <a class="source-text" @click.stop="gotoSource">
               source
           </a>
       </div>
@@ -67,13 +67,15 @@ import {
   PropType, ref, defineProps, computed, onMounted, onUnmounted, Ref, reactive, watch, inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { useCookies } from 'vue3-cookies';
 import ToastService from 'primevue/toastservice';
 import { useToast } from 'primevue/usetoast';
 import { useGtag } from 'vue-gtag-next';
 import { BeforeAfterPicsService } from '@/services';
 import { Constants, Environment } from '@/constants';
 import { BeforeAfterPicture } from '@/models';
+import { StorgeService } from '@/services/storage.service';
+import { Dialog } from '@capacitor/dialog';
+import { AnalyticsService } from '@/services/analytics.service';
 
 const props = defineProps({
   post: {
@@ -108,36 +110,65 @@ if (!setLastClickedPost) {
   throw Error('cannot find injected setLastClickedPost');
 }
 
-const { event } = useGtag();
-const { cookies } = useCookies();
 let cookieKey = `post/${post.id}`;
-const liked = ref(cookies.get(cookieKey) === 'true');
+const liked = ref(false);
+StorgeService.get(cookieKey)
+  .then((resp) => liked.value = resp === 'true')
+  .catch(e => console.error(e));
 watch(post, (oldV, newV) => {
   cookieKey = `post/${post.id}`;
-  liked.value = cookies.get(cookieKey) === 'true';
+  StorgeService.get(cookieKey)
+    .then((resp) => liked.value = resp === 'true')
+    .catch(e => console.error(e));
 });
+
+let pendingLike = false;
 async function likePost() {
-  if (Constants.ENV === Environment.PROD) {
-    event('like');
+  if (pendingLike) {
+    return;
+  }
+  if (Constants.ENV === Environment.WEB) {
+    AnalyticsService.analyticsEvent('like');
   }
   if (props.likeDisabled) {
     return;
   }
-  await BeforeAfterPicsService.likePost(post.id);
+  pendingLike = true;
+  try {
+    await BeforeAfterPicsService.likePost(post.id);
+  }
+  catch (e) {
+    console.error('error >> ' + e);
+  }
+  pendingLike = false;
   liked.value = true;
-  cookies.set(cookieKey, 'true');
+  StorgeService.set(cookieKey, 'true')
+    .catch(e => console.error(e));
   post.likes++;
 }
+
+let pendingDislike = false;
 async function dislikePost() {
-  if (Constants.ENV === Environment.PROD) {
-    event('dislike');
+  if (pendingDislike) {
+    return;
+  }
+  if (Constants.ENV === Environment.WEB) {
+    AnalyticsService.analyticsEvent('dislike');
   }
   if (props.likeDisabled) {
     return;
   }
-  await BeforeAfterPicsService.dislikePost(post.id);
+  pendingDislike = true;
+  try { 
+    await BeforeAfterPicsService.dislikePost(post.id);
+  }
+  catch (e) {
+    console.error("error >> " + e);
+  }
+  pendingDislike = false;
   liked.value = false;
-  cookies.set(cookieKey, 'false');
+  StorgeService.set(cookieKey, 'false')
+    .catch(e => console.error(e));
   post.likes--;
 }
 
@@ -146,8 +177,8 @@ function gotoPost() {
   if (!props.clickable) {
     return;
   }
-  if (Constants.ENV === Environment.PROD) {
-    event('post-clicked');
+  if (Constants.ENV === Environment.WEB) {
+    AnalyticsService.analyticsEvent('post-clicked');
   }
   setLastClickedPost(post.id);
   router.push({
@@ -155,22 +186,40 @@ function gotoPost() {
   });
   window.scrollTo(0, 0);
 }
+
+const gotoSource = () => {
+  if (Constants.ENV !== Environment.IOS) {
+    window.location.href = post.originalPost;
+    return;
+  }
+
+  Dialog.confirm({
+    title: 'Confirm',
+    message: `Redirect to ${post.originalPost}`,
+  }).then(resp => {
+    if (resp.value) {
+      window.location.href = post.originalPost;
+    }
+  });
+}
+
 const toast = useToast();
 function share() {
-  if (Constants.ENV === Environment.PROD) {
-    event('share');
+  if (Constants.ENV === Environment.WEB) {
+    AnalyticsService.analyticsEvent('share');
   }
-  // try to share using mobile
+
+  //try to share using mobile
   try {
     navigator.share({
       title: 'Progresspic',
-      text: `Check out this ${post.weightChange} lb weight loss photo!`,
+      text: `Check out this ${post.weightChange} lb weight loss photo! progresspicsearch.com/post/${post.id}`,
       url: `https://progresspicsearch.com/post/${post.id}`,
     });
     return;
   } catch (e) {}
 
-  // add to clipboard
+  //add to clipboard
   navigator.clipboard.writeText(`https://progresspicsearch.com/post/${post.id}`);
   toast.add({
     severity: 'success', 
@@ -343,6 +392,7 @@ function niceNumber(likes:number):string {
   a.source-text {
     font-size: 1rem;
     margin-bottom: 0.5rem;
+    text-decoration: underline;
   }
 
   .comment-icon{

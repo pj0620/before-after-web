@@ -19,4 +19,6 @@ app.use(VueGtag, {
 app.component('InputText', InputText);
 app.component('Toast', Toast);
 
+window.screen.orientation.lock('portrait');
+
 app.mount('#app');
