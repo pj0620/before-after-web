@@ -44,7 +44,7 @@
             </div>
             </div>
             <p v-if="errorMsg !== ''" style="color: red; background-color: white;">{{errorMsg}}</p>
-            <Button label="Post Comment" class="ml-3 border-white border-3 border-round text-lg font-bold post-button" @click="postComment"/>
+            <Button :loading="pendingCommentPost" label="Post Comment" class="ml-3 border-white border-3 border-round text-lg font-bold post-button" @click="postComment"/>
         </div>
 
         <RelatedPosts
@@ -131,7 +131,7 @@ watch(() => props.id, init);
 const newComment = ref('');
 const errorMsg = ref('');
 
-let pendingCommentPost = false;
+const pendingCommentPost = ref(false);
 function postComment() {
   if (newComment.value.length == 0) {
     errorMsg.value = 'Error: Empty Comment';
@@ -147,22 +147,22 @@ function postComment() {
     return;
   }
 
-  if (pendingCommentPost) {
+  if (pendingCommentPost.value) {
     return;
   }
-  pendingCommentPost = true;
+  pendingCommentPost.value = true;
   errorMsg.value = '';
   AnalyticsService.analyticsEvent('post-comment');
   BeforeAfterPicsService
     .postComment(post.id, newComment.value)
     .then((resp: CommentI) => {
-      pendingCommentPost = false;
+      pendingCommentPost.value = false;
       post.comments++;
       comments.value.push(resp);
       newComment.value = '';
     })
     .catch(() => {
-      pendingCommentPost = false;
+      pendingCommentPost.value = false;
       console.log('error while posting comment');
     });
 }
