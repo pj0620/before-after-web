@@ -116,11 +116,12 @@ const search = (searchParamsIn: Partial<SearchParams>) => {
 };
 
 // Scrolling
-const loadingMorePosts = ref(false);
+let loadingMorePosts = false;
 function loadMorePosts(): void {
-  if (loadingMorePosts.value) {
+  if (loadingMorePosts) {
     return;
   }
+  loadingMorePosts = true; 
   if (Constants.ENV === Environment.WEB) {
     AnalyticsService.analyticsEvent('load-more-posts-main');
   }
@@ -129,7 +130,7 @@ function loadMorePosts(): void {
     .getPosts({ ...searchParams.value, limit: postsLimit, offset: postsOffset.value })
     .then((resp: BeforeAfterPicture[]) => {
       loading.value = false;
-      loadingMorePosts.value = false;
+      loadingMorePosts = false;
       posts.push(...resp);
     });
 }
