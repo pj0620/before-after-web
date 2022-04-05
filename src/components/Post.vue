@@ -121,27 +121,51 @@ watch(post, (oldV, newV) => {
     .then((resp) => liked.value = resp === 'true')
     .catch(e => console.error(e));
 });
+
+let pendingLike = false;
 async function likePost() {
+  if (pendingLike) {
+    return;
+  }
   if (Constants.ENV === Environment.WEB) {
     AnalyticsService.analyticsEvent('like');
   }
   if (props.likeDisabled) {
     return;
   }
-  await BeforeAfterPicsService.likePost(post.id);
+  pendingLike = true;
+  try {
+    await BeforeAfterPicsService.likePost(post.id);
+  }
+  catch (e) {
+    console.error('error >> ' + e);
+  }
+  pendingLike = false;
   liked.value = true;
   StorgeService.set(cookieKey, 'true')
     .catch(e => console.error(e));
   post.likes++;
 }
+
+let pendingDislike = false;
 async function dislikePost() {
+  if (pendingDislike) {
+    return;
+  }
   if (Constants.ENV === Environment.WEB) {
     AnalyticsService.analyticsEvent('dislike');
   }
   if (props.likeDisabled) {
     return;
   }
-  await BeforeAfterPicsService.dislikePost(post.id);
+  pendingDislike = true;
+  try { 
+    await BeforeAfterPicsService.dislikePost(post.id);
+  }
+  catch (e) {
+    console.error("error >> " + e);
+  }
+  pendingDislike = false;
   liked.value = false;
   StorgeService.set(cookieKey, 'false')
     .catch(e => console.error(e));
