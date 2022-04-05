@@ -132,7 +132,11 @@ function loadMorePosts(): void {
       loading.value = false;
       loadingMorePosts = false;
       posts.push(...resp);
-    });
+    })
+    .catch(e => {
+      loadingMorePosts = false;
+      console.error('error >> ' + e);
+    })
 }
 const scrollComponent = ref(null);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

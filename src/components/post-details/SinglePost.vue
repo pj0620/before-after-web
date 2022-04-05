@@ -131,6 +131,7 @@ watch(() => props.id, init);
 const newComment = ref('');
 const errorMsg = ref('');
 
+let pendingCommentPost = false;
 function postComment() {
   if (newComment.value.length == 0) {
     errorMsg.value = 'Error: Empty Comment';
@@ -145,16 +146,25 @@ function postComment() {
   if (_.isEmpty(post)) {
     return;
   }
+
+  if (pendingCommentPost) {
+    return;
+  }
+  pendingCommentPost = true;
   errorMsg.value = '';
   AnalyticsService.analyticsEvent('post-comment');
   BeforeAfterPicsService
     .postComment(post.id, newComment.value)
     .then((resp: CommentI) => {
+      pendingCommentPost = false;
       post.comments++;
       comments.value.push(resp);
       newComment.value = '';
     })
-    .catch(() => console.log('error while posting comment'));
+    .catch(() => {
+      pendingCommentPost = false;
+      console.log('error while posting comment');
+    });
 }
 
 // eslint-disable-next-line no-shadow
