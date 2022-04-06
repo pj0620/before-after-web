@@ -7,10 +7,11 @@
                 v-for="post in posts"
                 :key="post.id"
             >
-                <div class="post border-round shadow-2 w-full mb-3 bg-primary px-2">
+                <div class="post border-round shadow-2 w-full mb-3 bg-primary">
                     <Post 
                         :post="post"
-                        :threeSplitEnabled="true" />
+                        :threeSplitEnabled="true" 
+                    />
                 </div>
                 <div v-if="Math.random() <= adProb" class="in-article-ad w-max h-max">
                     <InArticleAd></InArticleAd>

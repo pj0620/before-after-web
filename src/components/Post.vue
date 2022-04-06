@@ -41,8 +41,10 @@
               source
           </a>
       </div>
-      <div v-if="post.imageUrl?.includes('redditmedia')">
-        <div class="overall-scalable"
+      <div 
+        v-if="post.imageUrl?.includes('redditmedia')"
+        class="flex flex-row justify-content-center w-full">
+        <div class="align-content-center overall-scalable"
         :width="post.imageWidth!" :height="post.imageHeight!"
         :style="`width: ${finalWidth}px; height: ${finalHeight}px;`">
           <iframe
@@ -374,7 +376,7 @@ function niceNumber(likes:number):string {
 
   .heading-text {
     margin: auto;
-    font-size: 2.1rem;
+    font-size: 2rem;
     font-weight: bolder;
   }
 

@@ -14,7 +14,9 @@
         :key="post.id"
       >
         <div class="post md:border-round lg:border-round xl:border-round shadow-2 mb-2 bg-primary" :id="'post-' + post.id">
-          <Post :post="post"/>
+          <Post 
+            :post="post"
+            :three-split-enabled="true"/>
         </div>
 
         <div v-if="Math.random() <= adProb" class="in-article-ad w-max h-max">
