@@ -1,6 +1,6 @@
 <template>
-    <div class="card mt-5 w-9 contact-info border-round shadow-2">
-        <div class="flex flex-column card-container green-container">
+    <div class="card mt-2 xl:mx-3 lg:mx-3 md:mx-3 contact-info border-round shadow-2">
+        <div class="flex flex-column card-container">
             <div class="flex flex-wrap card-container">
                 <p class="contact-info-title">Contact Info:</p>
             </div>
@@ -32,7 +32,6 @@
 
     .contact-info {
         margin: auto;
-        width: 50%;
         padding-bottom: 4rem;
         background: var(--color-primary);
     }
