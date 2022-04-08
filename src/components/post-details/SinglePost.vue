@@ -180,6 +180,10 @@ enum Duration {
 function getDateDesc(date:string): string {
   const diff = Math.floor(Date.now() / 1000) - Math.floor(new Date(date).getTime() / 1000);
 
+  if (diff < 0) {
+    return '0 seconds ago';
+  }
+
   if (diff < Duration.MINUTE) {
     return `${diff} seconds ago`;
   }
