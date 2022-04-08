@@ -1,5 +1,5 @@
 <template>
-    <div v-if="post.imageUrl" class="mb-3 pt-2 mx-3">
+    <div v-if="post.imageUrl" class="mb-3 pt-2 xl:mx-3 lg:mx-3 md:mx-3 sm:mx-0">
         <div class="flex" v-if="showBackButton">
           <Button 
             icon="pi pi-chevron-left"
@@ -10,7 +10,7 @@
         </div>
 
         <div class="flex flex-row align-items-center justify-content-center">
-          <div class="flex align-items-center justify-content-center border-round shadow-2 mb-3 bg-primary px-2 pb-2 " id="mainPost">
+          <div class="flex align-items-center justify-content-center xl:border-round lg:border-round md:border-round shadow-2 mb-3 bg-primary px-2 pb-2 " id="mainPost">
             <Post
               :post="post"
               :alwaysFullSize="true"
@@ -20,28 +20,28 @@
         </div>
 
         <h3 id="comments-title" class="ml-3 mt-0 mb-0">Comments</h3>
-        <div class="comment-section px-3 pt-3 pb-6 mt-0">
+        <div class="comment-section xl:px-3 lg:px-3 md:px-3 sm:px-2 px-2 pt-3 pb-6 mt-0">
             <div class="grid">
-            <div class="col-12 py-1" v-for="comment in comments">
-                <div class="u-shadow-v18 g-bg-secondary px-4 pt-1 pb-1">
-                <div class="mb-0 comment-time">
-                    <span class="g-color-gray-dark-v4 g-font-size-12">
-                    {{getDateDesc(comment.createdAt)}}
-                    </span>
-                </div>
-                <p class="comment-block-text mt-3 mb-1">
-                    {{comment.body}}
-                </p>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="media-body u-shadow-v18 g-bg-secondary px-4 pt-3 pb-2">
-                <div class="mb-0 comment-time">
-                    <span class="text-lg font-bold">New Comment</span>
-                </div>
-                <Textarea class="col-12" v-model="newComment" rows="5" cols="30" />
-                </div>
-            </div>
+              <div class="col-12 py-1" v-for="comment in comments">
+                  <div class="u-shadow-v18 g-bg-secondary px-4 pt-1 pb-1">
+                    <div class="mb-0 comment-time">
+                        <span class="g-color-gray-dark-v4 g-font-size-12">
+                        {{getDateDesc(comment.createdAt)}}
+                        </span>
+                    </div>
+                    <p class="comment-block-text mt-3 mb-1">
+                        {{comment.body}}
+                    </p>
+                  </div>
+              </div>
+              <div class="col-12">
+                  <div class="media-body u-shadow-v18 g-bg-secondary xl:px-4 lg:px-4 md:px-4 sm:px-2 px-2 pt-3 pb-2">
+                  <div class="mb-0 comment-time">
+                      <span class="text-lg font-bold">New Comment</span>
+                  </div>
+                  <Textarea class="col-12" v-model="newComment" rows="5" cols="30" />
+                  </div>
+              </div>
             </div>
             <p v-if="errorMsg !== ''" style="color: red; background-color: white;">{{errorMsg}}</p>
             <Button :loading="pendingCommentPost" label="Post Comment" class="ml-3 border-white border-3 border-round text-lg font-bold post-button" @click="postComment"/>

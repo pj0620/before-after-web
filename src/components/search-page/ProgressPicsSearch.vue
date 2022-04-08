@@ -8,13 +8,15 @@
   <!-- Non-empty -->
   <div id="photos" v-if="!loading && posts.length > 0"
     ref='scrollComponent'>
-    <div class="grid font-bold text-white md:border-round lg:border-round xl:border-round mx-0 my-2" >
+    <div class="grid font-bold text-white mx-0 my-2" >
       <div class="col-12 px-0 xl:col-4 lg:col-6 md:col-6 pb-0 pt-0 lg:px-2 md:px-2"
         v-for="post in posts"
         :key="post.id"
       >
         <div class="post md:border-round lg:border-round xl:border-round shadow-2 mb-2 bg-primary" :id="'post-' + post.id">
-          <Post :post="post"/>
+          <Post 
+            :post="post"
+            :three-split-enabled="true"/>
         </div>
 
         <div v-if="Math.random() <= adProb" class="in-article-ad w-max h-max">
