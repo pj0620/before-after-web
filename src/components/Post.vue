@@ -376,7 +376,7 @@ function niceNumber(likes:number):string {
 
   .heading-text {
     margin: auto;
-    font-size: 2rem;
+    font-size: 2.1rem;
     font-weight: bolder;
   }
 

@@ -11,7 +11,7 @@ export const Constants = {
   COMMENTS: '/comments',
   INFINITE_SCROLL: true,
   AD_PROB: 0,
-  POSTS_LIMIT: 10,
+  POSTS_LIMIT: 5,
   ENV: Environment.IOS as Environment,
   INCLUDE_SOURCE: true,
   MAX_COMMENT_LENGTH: 250
