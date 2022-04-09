@@ -78,6 +78,7 @@ import { BeforeAfterPicture } from '@/models';
 import { StorgeService } from '@/services/storage.service';
 import { Dialog } from '@capacitor/dialog';
 import { AnalyticsService } from '@/services/analytics.service';
+import { Share } from '@capacitor/share';
 
 const props = defineProps({
   post: {
@@ -190,7 +191,8 @@ function gotoPost() {
 }
 
 const gotoSource = () => {
-  if (Constants.ENV !== Environment.IOS) {
+  if (Constants.ENV !== Environment.IOS &&
+      Constants.ENV !== Environment.ANDROID) {
     window.location.href = post.originalPost;
     return;
   }
@@ -211,24 +213,26 @@ function share() {
     AnalyticsService.analyticsEvent('share');
   }
 
-  //try to share using mobile
-  try {
-    navigator.share({
-      title: 'Progresspic',
-      text: `Check out this ${post.weightChange} lb weight loss photo! progresspicsearch.com/post/${post.id}`,
-      url: `https://progresspicsearch.com/post/${post.id}`,
-    });
-    return;
-  } catch (e) {}
+  Share.share({
+    title: 'Progresspic',
+    text: `Check out this ${post.weightChange} lb weight loss photo. progresspicsearch.com/post/${post.id}`,
+    url: `https://progresspicsearch.com/post/${post.id}`,
+    dialogTitle: 'Share with buddies',
+  })
+  .catch(e => {
+    if (e.code !== 'UNAVAILABLE') {
+       androreturn;
+    }
 
-  //add to clipboard
-  navigator.clipboard.writeText(`https://progresspicsearch.com/post/${post.id}`);
-  toast.add({
-    severity: 'success', 
-    summary: 'Url Copied To Clipboard', 
-    // detail: `https://progresspicsearch.com/post/${post.id}`, 
-    life: 3000,
-  });
+    //add to clipboard
+    navigator.clipboard.writeText(`https://progresspicsearch.com/post/${post.id}`);
+      toast.add({
+        severity: 'success', 
+        summary: 'Url Copied To Clipboard', 
+        // detail: `https://progresspicsearch.com/post/${post.id}`, 
+        life: 3000,
+      });
+    });
 }
 
 // for switiching searchbar

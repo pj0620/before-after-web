@@ -16,6 +16,9 @@ export class StorgeService {
       case Environment.IOS:
         Storage.set({ key, value });
         break;
+      case Environment.ANDROID:
+        Storage.set({ key, value });
+        break;
       default:
         console.error('error: invalid environment ' + Constants.ENV);
     }
@@ -28,11 +31,18 @@ export class StorgeService {
       case Environment.WEB:
         return this.cookies.get(key);
       case Environment.IOS:
-        const resp = await Storage.get({ key });
-        return resp.value;
+        return await this.getFromStorage(key);
+      case Environment.ANDROID:
+        return await this.getFromStorage(key);
       default:
         console.error('error: invalid environment ' + Constants.ENV);
         return null;
     }
+  }
+
+  static async getFromStorage(key: string) {
+    const resp = await Storage.get({ key })
+      .catch(e => console.error('error getting key from storage >> ', e));
+    return resp ? resp.value : null;
   }
 }

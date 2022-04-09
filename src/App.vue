@@ -24,8 +24,6 @@ import { SearchParams } from './models';
 import { Constants, Environment } from './constants';
 
 const addNotchPadding = ref(Constants.ENV === Environment.IOS);
-console.log('addNotchPadding.value')
-console.log(addNotchPadding.value)
 
 const router = useRouter();
 
