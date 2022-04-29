@@ -21,8 +21,8 @@ app.component('InputText', InputText);
 app.component('Toast', Toast);
 
 if (Constants.ENV === Environment.ANDROID ||
-    Constants.ENV === Environment.IOS) {
-  window.screen.orientation.lock('portrait');
+  Constants.ENV === Environment.IOS) {
+window.screen.orientation.lock('portrait');
 }
 
 app.mount('#app');
