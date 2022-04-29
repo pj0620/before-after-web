@@ -9,6 +9,7 @@ import ToastService from 'primevue/toastservice';
 import VueGtag from 'vue-gtag';
 import router from './router';
 import App from './App.vue';
+import { Constants, Environment } from './constants';
 
 const app = createApp(App).use(router);
 app.use(PrimeVue);
@@ -19,6 +20,9 @@ app.use(VueGtag, {
 app.component('InputText', InputText);
 app.component('Toast', Toast);
 
-window.screen.orientation.lock('portrait');
+if (Constants.ENV === Environment.ANDROID ||
+    Constants.ENV === Environment.IOS) {
+  window.screen.orientation.lock('portrait');
+}
 
 app.mount('#app');
